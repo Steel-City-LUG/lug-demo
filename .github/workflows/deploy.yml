@@ -10,6 +10,7 @@ jobs:
   deploy:
     name: Deploy plugin over SFTP
     runs-on: ubuntu-latest
+    environment: prod
 
     steps:
       - name: Check out plugin
@@ -25,6 +26,12 @@ jobs:
           test -n "$SFTP_PASS" || { echo "Missing SFTP_PASS secret" >&2; exit 1; }
           test -n "$SFTP_PATH" || { echo "Missing sftp_path repository variable" >&2; exit 1; }
 
+      - name: Normalize remote plugin path
+        id: path
+        env:
+          SFTP_PATH: ${{ vars.sftp_path }}
+        run: echo "remote=${SFTP_PATH%/}/lug-demo" >> "$GITHUB_OUTPUT"
+
       - name: Deploy plugin directory
         uses: wlixcc/SFTP-Deploy-Action@v1.2.5
         with:
@@ -32,7 +39,6 @@ jobs:
           username: ${{ secrets.SFTP_USER }}
           password: ${{ secrets.SFTP_PASS }}
           local_path: './*'
-          # sftp_path is configured with its trailing slash, e.g. /.../plugins/
-          remote_path: ${{ vars.sftp_path }}lug-demo
+          remote_path: ${{ steps.path.outputs.remote }}
           sftp_only: true
           delete_remote_files: false
