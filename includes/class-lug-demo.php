@@ -12,7 +12,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class LUG_Demo {
 	const BATCH_ID       = 'steel-city-lug-demo-v1';
 	const OPTION_BATCH   = 'lug_demo_active_batch';
+	const OPTION_MENU    = 'lug_demo_navigation_menu';
+	const OPTION_EVENTS  = 'lug_demo_event_ids';
+	const OPTION_FORUMS  = 'lug_demo_forum_ids';
+	const OPTION_TOPICS  = 'lug_demo_topic_ids';
+	const OPTION_REPLIES = 'lug_demo_reply_ids';
+	const OPTION_ACTIVITY = 'lug_demo_activity_ids';
+	const OPTION_SHIFTS   = 'lug_demo_shift_ids';
+	const OPTION_SITE_STATE = 'lug_demo_site_state';
+	const OPTION_WELCOME_PAGE = 'lug_demo_welcome_page';
+	const OPTION_OFFICER_STATE = 'lug_demo_officer_state';
+	const OPTION_REPORT = 'lug_demo_last_report';
+	const USER_META_PROFILE_BATCH = '_lug_demo_profile_batch_id';
 	const USER_META_BATCH = '_lug_demo_batch_id';
+	const USER_META_SUPER = '_lug_demo_super';
+	const CONTENT_META_BATCH = '_lug_demo_content_batch_id';
+	const SANDBOXED_CAPABILITIES = array(
+		'manage_options',
+		'manage_network_options',
+		'activate_plugins',
+		'update_plugins',
+		'delete_plugins',
+		'install_plugins',
+		'edit_plugins',
+		'update_themes',
+		'delete_themes',
+		'install_themes',
+		'edit_themes',
+		'switch_themes',
+		'update_core',
+		'edit_users',
+		'create_users',
+		'delete_users',
+		'promote_users',
+		'customize',
+		'edit_theme_options',
+	);
 
 	private $accounts;
 
@@ -20,7 +55,12 @@ final class LUG_Demo {
 		add_action( 'admin_menu', array( 'LUG_Demo_Admin', 'register_menu' ), 30 );
 		add_action( 'admin_post_lug_demo_seed', array( $this, 'handle_seed' ) );
 		add_action( 'admin_post_lug_demo_reset', array( $this, 'handle_reset' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
+		add_action( 'admin_init', array( $this, 'enforce_admin_sandbox' ), 1 );
+		add_filter( 'user_has_cap', array( $this, 'restrict_sandbox_capabilities' ), 99, 4 );
+		add_filter( 'lug_inventory_manager_user_ids', array( $this, 'add_demo_inventory_managers' ) );
 		add_filter( 'lug_demo_seed_adapters', array( $this, 'register_core_adapter' ) );
+		add_shortcode( 'lug_demo_accounts', array( $this, 'render_account_directory' ) );
 		add_action( 'login_form_lug_demo', array( $this, 'handle_quick_login' ) );
 	}
 
@@ -30,20 +70,172 @@ final class LUG_Demo {
 			'run'   => array( $this, 'seed_accounts' ),
 			'reset' => array( $this, 'reset_accounts' ),
 		);
+		$adapters['member_profiles'] = array(
+			'label' => __( 'Member profiles and locations', 'lug-demo' ),
+			'run'   => array( $this, 'seed_member_profiles' ),
+			'reset' => array( $this, 'reset_member_profiles' ),
+		);
+		$adapters['officers'] = array(
+			'label' => __( 'Demo officer assignments', 'lug-demo' ),
+			'run'   => array( $this, 'seed_officer_assignments' ),
+			'reset' => array( $this, 'reset_officer_assignments' ),
+		);
+		$adapters['site_content'] = array(
+			'label' => __( 'Demo site content', 'lug-demo' ),
+			'run'   => array( $this, 'seed_site_content' ),
+			'reset' => array( $this, 'reset_site_content' ),
+		);
+		$adapters['lug_events'] = array(
+			'label' => __( 'LUG events', 'lug-demo' ),
+			'run'   => array( $this, 'seed_events' ),
+			'reset' => array( $this, 'reset_events' ),
+		);
+		$adapters['event_shifts'] = array(
+			'label' => __( 'Event shifts and signups', 'lug-demo' ),
+			'run'   => array( $this, 'seed_event_shifts' ),
+			'reset' => array( $this, 'reset_event_shifts' ),
+		);
+		$adapters['bbpress'] = array(
+			'label' => __( 'Demo forums', 'lug-demo' ),
+			'run'   => array( $this, 'seed_forums' ),
+			'reset' => array( $this, 'reset_forums' ),
+		);
+		$adapters['buddypress'] = array(
+			'label' => __( 'Community activity', 'lug-demo' ),
+			'run'   => array( $this, 'seed_activity' ),
+			'reset' => array( $this, 'reset_activity' ),
+		);
 
 		return $adapters;
 	}
 
+	public function enqueue_frontend_assets() {
+		wp_enqueue_style(
+			'lug-demo',
+			plugins_url( 'assets/demo.css', LUG_DEMO_FILE ),
+			array(),
+			LUG_DEMO_VERSION
+		);
+	}
+
+	public function restrict_sandbox_capabilities( $allcaps, $caps, $args, $user ) {
+		if ( ! $user instanceof WP_User || ! $this->is_sandboxed_user( $user->ID ) ) {
+			return $allcaps;
+		}
+
+		foreach ( self::SANDBOXED_CAPABILITIES as $capability ) {
+			$allcaps[ $capability ] = false;
+		}
+
+		// The demo super account may exercise lug-core's user editor, but only
+		// through the explicitly allowed user-edit screen below. It never gets
+		// WordPress's broader manage_options or user-management capabilities.
+		if ( $this->is_demo_super_user( $user->ID ) ) {
+			$allcaps['edit_users'] = true;
+		}
+
+		return $allcaps;
+	}
+
+	public function enforce_admin_sandbox() {
+		if ( ! is_user_logged_in() || ! $this->is_sandboxed_user( get_current_user_id() ) ) {
+			return;
+		}
+
+		$script = basename( (string) ( $_SERVER['PHP_SELF'] ?? '' ) );
+		if ( 'admin-ajax.php' === $script ) {
+			return;
+		}
+		if ( 'admin-post.php' === $script ) {
+			$action = isset( $_REQUEST['action'] ) ? sanitize_key( wp_unslash( $_REQUEST['action'] ) ) : '';
+			if ( 0 === strpos( $action, 'lug_' ) ) {
+				return;
+			}
+			wp_safe_redirect( home_url( '/' ) );
+			exit;
+		}
+		if ( 'user-edit.php' === $script && $this->is_demo_super_user( get_current_user_id() ) ) {
+			$edited_user_id = isset( $_GET['user_id'] ) ? absint( $_GET['user_id'] ) : 0;
+			if ( $edited_user_id && self::BATCH_ID === get_user_meta( $edited_user_id, self::USER_META_BATCH, true ) ) {
+				return;
+			}
+			wp_safe_redirect( home_url( '/' ) );
+			exit;
+		}
+
+		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+		if ( 'admin.php' === $script && $this->is_allowed_plugin_page( $page ) ) {
+			return;
+		}
+
+		wp_safe_redirect( home_url( '/' ) );
+		exit;
+	}
+
+	private function is_allowed_plugin_page( $page ) {
+		$allowed = (array) apply_filters(
+			'lug_demo_allowed_admin_pages',
+			array(
+				'lug-demo',
+				'lug-officers',
+				'lug-welcome-pm',
+				'lug-user-zip-map',
+				'lug-layout-designer',
+				'lug-rotating-displays',
+			)
+		);
+
+		return '' !== $page && in_array( $page, array_map( 'sanitize_key', $allowed ), true );
+	}
+
+	private function is_sandboxed_user( $user_id ) {
+		return (bool) $user_id && self::BATCH_ID === get_user_meta( (int) $user_id, self::USER_META_BATCH, true );
+	}
+
+	private function is_demo_super_user( $user_id ) {
+		return $this->is_sandboxed_user( $user_id ) && '1' === (string) get_user_meta( (int) $user_id, self::USER_META_SUPER, true );
+	}
+
+	public function add_demo_inventory_managers( $ids ) {
+		foreach ( $this->account_fixtures() as $account ) {
+			if ( empty( $account['super'] ) ) {
+				continue;
+			}
+			$user = get_user_by( 'login', $account['login'] );
+			if ( $user && $this->is_demo_super_user( $user->ID ) ) {
+				$ids[] = (int) $user->ID;
+			}
+		}
+
+		return array_values( array_unique( array_map( 'absint', (array) $ids ) ) );
+	}
+
 	public function handle_seed() {
 		$this->verify_request();
+		$report = array(
+			'action'    => 'seed',
+			'completed' => current_time( 'mysql' ),
+			'adapters'  => array(),
+			'errors'    => array(),
+		);
 
-		foreach ( (array) apply_filters( 'lug_demo_seed_adapters', array() ) as $adapter ) {
+		foreach ( (array) apply_filters( 'lug_demo_seed_adapters', array() ) as $key => $adapter ) {
 			if ( isset( $adapter['run'] ) && is_callable( $adapter['run'] ) ) {
-				call_user_func( $adapter['run'], self::BATCH_ID );
+				try {
+					$result = call_user_func( $adapter['run'], self::BATCH_ID );
+					if ( is_wp_error( $result ) ) {
+						$report['errors'][ $key ] = $result->get_error_message();
+					} else {
+						$report['adapters'][ $key ] = isset( $adapter['label'] ) ? $adapter['label'] : $key;
+					}
+				} catch ( Throwable $error ) {
+					$report['errors'][ $key ] = $error->getMessage();
+				}
 			}
 		}
 
 		update_option( self::OPTION_BATCH, self::BATCH_ID, false );
+		update_option( self::OPTION_REPORT, $report, false );
 		$this->redirect( 'seeded' );
 	}
 
@@ -58,6 +250,16 @@ final class LUG_Demo {
 		}
 
 		delete_option( self::OPTION_BATCH );
+		update_option(
+			self::OPTION_REPORT,
+			array(
+				'action'    => 'reset',
+				'completed' => current_time( 'mysql' ),
+				'adapters'  => array(),
+				'errors'    => array(),
+			),
+			false
+		);
 		$this->redirect( 'reset' );
 	}
 
@@ -84,11 +286,20 @@ final class LUG_Demo {
 
 			if ( ! is_wp_error( $user_id ) ) {
 				update_user_meta( $user_id, self::USER_META_BATCH, $batch_id );
+				if ( ! empty( $account['super'] ) ) {
+					update_user_meta( $user_id, self::USER_META_SUPER, '1' );
+				} else {
+					delete_user_meta( $user_id, self::USER_META_SUPER );
+				}
 			}
 		}
 	}
 
 	public function reset_accounts( $batch_id ) {
+		if ( ! function_exists( 'wp_delete_user' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/user.php';
+		}
+
 		$users = get_users(
 			array(
 				'fields'     => 'ids',
@@ -103,6 +314,550 @@ final class LUG_Demo {
 		}
 	}
 
+	public function seed_member_profiles( $batch_id ) {
+		$profiles = (array) require LUG_DEMO_DIR . 'fixtures/profiles.php';
+		foreach ( $profiles as $login => $profile ) {
+			$user = get_user_by( 'login', $login );
+			if ( ! $user ) {
+				continue;
+			}
+
+			update_user_meta( $user->ID, self::USER_META_PROFILE_BATCH, $batch_id );
+			foreach ( $profile as $key => $value ) {
+				update_user_meta( $user->ID, sanitize_key( $key ), sanitize_text_field( $value ) );
+			}
+
+			if ( function_exists( 'xprofile_set_field_data' ) && ! empty( $profile['zip'] ) ) {
+				$field_id = 0;
+				$settings = get_option( 'lug_user_zip_map_settings', array() );
+				if ( is_array( $settings ) ) {
+					$field_id = absint( $settings['zip_profile_field_id'] ?? 0 );
+				}
+				if ( $field_id ) {
+					xprofile_set_field_data( $field_id, $user->ID, $profile['zip'] );
+				}
+			}
+		}
+	}
+
+	public function reset_member_profiles( $batch_id ) {
+		$users = get_users(
+			array(
+				'fields'     => 'ids',
+				'number'     => -1,
+				'meta_key'   => self::USER_META_PROFILE_BATCH,
+				'meta_value' => $batch_id,
+			)
+		);
+
+		foreach ( $users as $user_id ) {
+			delete_user_meta( $user_id, self::USER_META_PROFILE_BATCH );
+			delete_user_meta( $user_id, 'zip' );
+			delete_user_meta( $user_id, 'lug_member_type' );
+			delete_user_meta( $user_id, 'lug_primary_interest' );
+			delete_user_meta( $user_id, 'lug_home_region' );
+		}
+	}
+
+	public function seed_officer_assignments( $batch_id ) {
+		global $wpdb;
+		$table = $wpdb->prefix . 'lug_officer_positions';
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
+			return;
+		}
+
+		$this->reset_officer_assignments( $batch_id );
+		$assignments = array(
+			'President'  => 'demo1',
+			'Secretary'  => 'builder',
+			'Ambassador' => 'volunteer',
+			'Treasurer'  => 'family',
+		);
+		$previous = array();
+
+		foreach ( $assignments as $title => $login ) {
+			$user = get_user_by( 'login', $login );
+			$position = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE title = %s", $title ), ARRAY_A );
+			if ( ! $user || ! is_array( $position ) ) {
+				continue;
+			}
+
+			$previous[] = array(
+				'id'                => (int) $position['id'],
+				'current_member_id' => $position['current_member_id'],
+				'term_start_date'   => $position['term_start_date'],
+				'term_end_date'     => $position['term_end_date'],
+			);
+			$wpdb->update(
+				$table,
+				array(
+					'current_member_id' => (int) $user->ID,
+					'term_start_date'   => current_time( 'Y-m-d' ),
+					'term_end_date'     => gmdate( 'Y-m-d', strtotime( '+1 year' ) ),
+				),
+				array( 'id' => (int) $position['id'] ),
+				array( '%d', '%s', '%s' ),
+				array( '%d' )
+			);
+		}
+
+		update_option( self::OPTION_OFFICER_STATE, $previous, false );
+	}
+
+	public function reset_officer_assignments( $batch_id ) {
+		global $wpdb;
+		$table = $wpdb->prefix . 'lug_officer_positions';
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
+			foreach ( (array) get_option( self::OPTION_OFFICER_STATE, array() ) as $position ) {
+				$wpdb->update(
+					$table,
+					array(
+						'current_member_id' => $position['current_member_id'],
+						'term_start_date'   => $position['term_start_date'],
+						'term_end_date'     => $position['term_end_date'],
+					),
+					array( 'id' => (int) $position['id'] ),
+					array( '%d', '%s', '%s' ),
+					array( '%d' )
+				);
+			}
+		}
+		delete_option( self::OPTION_OFFICER_STATE );
+	}
+
+	public function seed_site_content( $batch_id ) {
+		$this->reset_site_content( $batch_id );
+
+		$fixture_file = LUG_DEMO_DIR . 'fixtures/site-content.php';
+		$fixtures     = file_exists( $fixture_file ) ? (array) require $fixture_file : array();
+		$page_ids     = array();
+
+		foreach ( $fixtures as $fixture ) {
+			$post_id = wp_insert_post(
+				array(
+					'post_title'   => $fixture['title'],
+					'post_name'    => $fixture['slug'],
+					'post_content' => $fixture['content'],
+					'post_excerpt' => isset( $fixture['excerpt'] ) ? $fixture['excerpt'] : '',
+					'post_status'  => 'publish',
+					'post_type'    => isset( $fixture['post_type'] ) ? $fixture['post_type'] : 'page',
+				),
+				true
+			);
+
+			if ( ! is_wp_error( $post_id ) ) {
+				update_post_meta( $post_id, self::CONTENT_META_BATCH, $batch_id );
+				$page_ids[ $fixture['slug'] ] = (int) $post_id;
+			}
+		}
+
+		$menu_id = $this->seed_navigation_menu( $page_ids );
+		if ( ! empty( $page_ids['welcome-to-the-demo-lug'] ) ) {
+			$this->configure_site_shell( $page_ids['welcome-to-the-demo-lug'], $menu_id );
+		}
+	}
+
+	public function reset_site_content( $batch_id ) {
+		$content_ids = get_posts(
+			array(
+				'post_type'      => 'any',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'no_found_rows'   => true,
+				'meta_key'       => self::CONTENT_META_BATCH,
+				'meta_value'     => $batch_id,
+			)
+		);
+
+		foreach ( $content_ids as $post_id ) {
+			wp_delete_post( (int) $post_id, true );
+		}
+
+		$menu_id = (int) get_option( self::OPTION_MENU, 0 );
+		if ( $menu_id ) {
+			wp_delete_nav_menu( $menu_id );
+			delete_option( self::OPTION_MENU );
+		}
+
+		$this->restore_site_shell();
+	}
+
+	public function seed_events( $batch_id ) {
+		if ( ! function_exists( 'lug_event_provider_available' ) || ! lug_event_provider_available() ) {
+			return;
+		}
+
+		$this->reset_events( $batch_id );
+		global $wpdb;
+		$table     = function_exists( 'lug_event_provider_table' ) ? lug_event_provider_table() : 'lug_events';
+		$columns   = array_map( 'strtolower', (array) $wpdb->get_col( "DESCRIBE `{$table}`", 0 ) );
+		$events    = require LUG_DEMO_DIR . 'fixtures/events.php';
+		$event_ids = array();
+
+		foreach ( (array) $events as $event ) {
+			$organizer = ! empty( $event['creator_login'] ) ? get_user_by( 'login', $event['creator_login'] ) : get_user_by( 'login', 'demo1' );
+			$creator   = $organizer ? (int) $organizer->ID : get_current_user_id();
+			$data = array(
+				'name'                => $event['name'],
+				'start_date'          => $event['start_date'],
+				'end_date'            => $event['end_date'],
+				'description'         => $event['description'],
+				'attendees'           => $event['attendees'],
+				'classification'      => $event['classification'],
+				'status'              => 'open',
+				'creator'             => $creator,
+				'url'                 => $event['url'],
+				'event_location'      => $event['event_location'],
+				'percent_kids'        => 0,
+				'percent_teens'       => 0,
+				'percent_adults'      => 0,
+				'social_links'        => $event['social_links'],
+				'entrance_fee'        => $event['entrance_fee'],
+				'community_enjoyment' => $event['community_enjoyment'],
+			);
+
+			$data = array_intersect_key( $data, array_flip( $columns ) );
+			if ( false !== $wpdb->insert( $table, $data ) ) {
+				$event_ids[] = (int) $wpdb->insert_id;
+			}
+		}
+
+		update_option( self::OPTION_EVENTS, $event_ids, false );
+	}
+
+	public function reset_events( $batch_id ) {
+		$event_ids = (array) get_option( self::OPTION_EVENTS, array() );
+		global $wpdb;
+		$event_table = function_exists( 'lug_event_provider_table' ) ? lug_event_provider_table() : 'lug_events';
+		$event_columns = array_map( 'strtolower', (array) $wpdb->get_col( "DESCRIBE `{$event_table}`", 0 ) );
+		$legacy_delete_supported = function_exists( 'lug_event_delete' ) && in_array( 'url', $event_columns, true ) && $this->table_exists( 'lug_events_participants' );
+		foreach ( $event_ids as $event_id ) {
+			// Credits are batch-owned through the event id. Remove the ledger rows
+			// before deleting the event so reset never leaves PAB history behind.
+			if ( $this->table_exists( 'lug_pab_log' ) ) {
+				$wpdb->delete( 'lug_pab_log', array( 'event_id' => (int) $event_id ), array( '%d' ) );
+			}
+			if ( $legacy_delete_supported ) {
+				lug_event_delete( (int) $event_id );
+			} else {
+				$wpdb->delete( 'lug_events_shifts', array( 'event' => (int) $event_id ), array( '%d' ) );
+				if ( function_exists( 'lug_event_shift_order_table_name' ) && $this->table_exists( lug_event_shift_order_table_name() ) ) {
+					$wpdb->delete( lug_event_shift_order_table_name(), array( 'event_id' => (int) $event_id ), array( '%d' ) );
+				}
+				$wpdb->delete( $event_table, array( 'id' => (int) $event_id ), array( '%d' ) );
+			}
+		}
+		delete_option( self::OPTION_EVENTS );
+	}
+
+	public function seed_event_shifts( $batch_id ) {
+		if ( ! function_exists( 'lug_event_shift_save' ) || ! function_exists( 'lug_event_shifts_table_exists' ) || ! lug_event_shifts_table_exists() ) {
+			return;
+		}
+
+		$this->reset_event_shifts( $batch_id );
+		global $wpdb;
+		$event_ids = (array) get_option( self::OPTION_EVENTS, array() );
+		$fixtures  = require LUG_DEMO_DIR . 'fixtures/shifts.php';
+		$shift_ids = array();
+		$signup_users = array();
+		foreach ( array( 'builder', 'family', 'volunteer', 'newmember' ) as $login ) {
+			$user = get_user_by( 'login', $login );
+			if ( $user ) {
+				$signup_users[] = (int) $user->ID;
+			}
+		}
+
+		foreach ( $event_ids as $event_id ) {
+			$event = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM lug_events WHERE id = %d', (int) $event_id ), ARRAY_A );
+			if ( ! is_array( $event ) ) {
+				continue;
+			}
+
+			foreach ( (array) $fixtures as $fixture ) {
+				$saved = lug_event_shift_save(
+					$event,
+					array(
+						'name'        => $fixture['name'],
+						'cups'        => $fixture['cups'],
+						'cap'         => $fixture['cap'],
+						'displaydate' => 3,
+						'priority'    => 0,
+					)
+				);
+
+				if ( is_wp_error( $saved ) || empty( $saved['id'] ) ) {
+					continue;
+				}
+
+				$shift_id = (int) $saved['id'];
+				$shift_ids[] = $shift_id;
+				if ( function_exists( 'perform_signup' ) && $this->table_exists( 'lug_events_participants' ) ) {
+					foreach ( (array) $signup_users as $user_id ) {
+						if ( $fixture['signups'] > 0 ) {
+							perform_signup( $user_id, $shift_id );
+							$fixture['signups']--;
+						}
+					}
+				}
+			}
+		}
+
+		// Close the elapsed fixture after signups exist. lug_close_event() locks
+		// its shifts and uses the normal LUG Core credit-distribution path, which
+		// makes the demo activity visible in PAB history just like a real event.
+		$shift_columns = array_map( 'strtolower', (array) $wpdb->get_col( 'DESCRIBE `lug_events_shifts`', 0 ) );
+		$can_close_with_credits = function_exists( 'lug_close_event' )
+			&& $this->table_exists( 'lug_events_participants' )
+			&& $this->table_exists( 'lug_pab_log' )
+			&& in_array( 'locked', $shift_columns, true );
+		if ( $can_close_with_credits ) {
+			$now = current_time( 'timestamp' );
+			foreach ( $event_ids as $event_id ) {
+				$event = $wpdb->get_row( $wpdb->prepare( 'SELECT end_date, status FROM lug_events WHERE id = %d', (int) $event_id ), ARRAY_A );
+				if ( is_array( $event ) && 'closed' !== strtolower( (string) $event['status'] ) && strtotime( (string) $event['end_date'] ) < $now ) {
+					lug_close_event( (int) $event_id );
+				}
+			}
+		}
+
+		update_option( self::OPTION_SHIFTS, $shift_ids, false );
+	}
+
+	public function reset_event_shifts( $batch_id ) {
+		if ( function_exists( 'delete_shift_data' ) && $this->table_exists( 'lug_events_participants' ) ) {
+			foreach ( (array) get_option( self::OPTION_SHIFTS, array() ) as $shift_id ) {
+				delete_shift_data( (int) $shift_id );
+			}
+		} else {
+			global $wpdb;
+			foreach ( (array) get_option( self::OPTION_SHIFTS, array() ) as $shift_id ) {
+				$wpdb->delete( 'lug_events_shifts', array( 'id' => (int) $shift_id ), array( '%d' ) );
+				if ( function_exists( 'lug_event_shift_order_table_name' ) && $this->table_exists( lug_event_shift_order_table_name() ) ) {
+					$wpdb->delete( lug_event_shift_order_table_name(), array( 'shift_id' => (int) $shift_id ), array( '%d' ) );
+				}
+			}
+		}
+		delete_option( self::OPTION_SHIFTS );
+	}
+
+	public function seed_forums( $batch_id ) {
+		if ( ! function_exists( 'bbp_insert_forum' ) || ! function_exists( 'bbp_insert_topic' ) || ! function_exists( 'bbp_insert_reply' ) ) {
+			return;
+		}
+
+		$this->reset_forums( $batch_id );
+		$moderator = get_user_by( 'login', 'demo1' );
+		$member    = get_user_by( 'login', 'demo' );
+		$author_id = $moderator ? (int) $moderator->ID : get_current_user_id();
+		$member_id = $member ? (int) $member->ID : $author_id;
+		$forums    = require LUG_DEMO_DIR . 'fixtures/forums.php';
+		$forum_ids = array();
+		$topic_ids = array();
+		$reply_ids = array();
+
+		foreach ( (array) $forums as $forum_fixture ) {
+			$forum_id = bbp_insert_forum(
+				array(
+					'post_title'   => $forum_fixture['title'],
+					'post_content' => $forum_fixture['content'],
+					'post_status'  => 'publish',
+					'post_author'  => $author_id,
+				)
+			);
+
+			if ( ! $forum_id || is_wp_error( $forum_id ) ) {
+				continue;
+			}
+
+			$forum_ids[] = (int) $forum_id;
+			foreach ( (array) $forum_fixture['topics'] as $topic_fixture ) {
+				$topic_id = bbp_insert_topic(
+					array(
+						'post_parent'  => $forum_id,
+						'post_title'   => $topic_fixture['title'],
+						'post_content' => $topic_fixture['content'],
+						'post_status'  => 'publish',
+						'post_author'  => $author_id,
+					)
+				);
+
+				if ( ! $topic_id || is_wp_error( $topic_id ) ) {
+					continue;
+				}
+
+				$topic_ids[] = (int) $topic_id;
+				foreach ( (array) $topic_fixture['replies'] as $index => $reply ) {
+					$reply_id = bbp_insert_reply(
+						array(
+							'post_parent'  => $topic_id,
+							'post_title'   => '',
+							'post_content' => $reply['content'],
+							'post_status'  => 'publish',
+							'post_author'  => 0 === $index ? $member_id : $author_id,
+						)
+					);
+
+					if ( $reply_id && ! is_wp_error( $reply_id ) ) {
+						$reply_ids[] = (int) $reply_id;
+					}
+				}
+			}
+		}
+
+		update_option( self::OPTION_FORUMS, $forum_ids, false );
+		update_option( self::OPTION_TOPICS, $topic_ids, false );
+		update_option( self::OPTION_REPLIES, $reply_ids, false );
+	}
+
+	public function reset_forums( $batch_id ) {
+		$reply_ids = (array) get_option( self::OPTION_REPLIES, array() );
+		$topic_ids = (array) get_option( self::OPTION_TOPICS, array() );
+		$forum_ids = (array) get_option( self::OPTION_FORUMS, array() );
+
+		foreach ( $reply_ids as $post_id ) {
+			wp_delete_post( (int) $post_id, true );
+		}
+		foreach ( $topic_ids as $post_id ) {
+			wp_delete_post( (int) $post_id, true );
+		}
+		foreach ( $forum_ids as $post_id ) {
+			wp_delete_post( (int) $post_id, true );
+		}
+
+		delete_option( self::OPTION_FORUMS );
+		delete_option( self::OPTION_TOPICS );
+		delete_option( self::OPTION_REPLIES );
+	}
+
+	public function seed_activity( $batch_id ) {
+		if ( ! function_exists( 'bp_activity_add' ) ) {
+			return;
+		}
+
+		$this->reset_activity( $batch_id );
+		$fixtures  = require LUG_DEMO_DIR . 'fixtures/activity.php';
+		$activity  = array();
+		$users     = array();
+		foreach ( array( 'demo', 'demo1', 'builder', 'family', 'volunteer', 'newmember' ) as $login ) {
+			$user = get_user_by( 'login', $login );
+			if ( $user ) {
+				$users[] = (int) $user->ID;
+			}
+		}
+
+		foreach ( (array) $fixtures as $index => $fixture ) {
+			$user_id = ! empty( $users ) ? $users[ $index % count( $users ) ] : get_current_user_id();
+			$activity_id = bp_activity_add(
+				array(
+					'user_id'       => $user_id,
+					'action'        => $fixture['action'],
+					'content'       => $fixture['content'],
+					'component'     => 'activity',
+					'type'          => 'activity_update',
+					'recorded_time' => gmdate( 'Y-m-d H:i:s', time() - ( $index * DAY_IN_SECONDS ) ),
+				)
+			);
+
+			if ( $activity_id ) {
+				$activity[] = (int) $activity_id;
+			}
+		}
+
+		update_option( self::OPTION_ACTIVITY, $activity, false );
+	}
+
+	public function reset_activity( $batch_id ) {
+		if ( function_exists( 'bp_activity_delete' ) ) {
+			foreach ( (array) get_option( self::OPTION_ACTIVITY, array() ) as $activity_id ) {
+				bp_activity_delete( array( 'id' => (int) $activity_id ) );
+			}
+		}
+		delete_option( self::OPTION_ACTIVITY );
+	}
+
+	private function seed_navigation_menu( $page_ids ) {
+		$menu_id = wp_create_nav_menu( __( 'Demo LUG Navigation', 'lug-demo' ) );
+		if ( is_wp_error( $menu_id ) ) {
+			return 0;
+		}
+
+		$items = array(
+			'welcome-to-the-demo-lug' => __( 'Home', 'lug-demo' ),
+			'getting-started'         => __( 'Getting Started', 'lug-demo' ),
+			'about-this-demo'         => __( 'About the Demo', 'lug-demo' ),
+			'community-guidelines'    => __( 'Guidelines', 'lug-demo' ),
+		);
+
+		foreach ( $items as $slug => $label ) {
+			if ( empty( $page_ids[ $slug ] ) ) {
+				continue;
+			}
+
+			wp_update_nav_menu_item(
+			$menu_id,
+			0,
+			array(
+				'menu-item-title'     => $label,
+				'menu-item-object'    => 'page',
+				'menu-item-object-id' => $page_ids[ $slug ],
+				'menu-item-type'      => 'post_type',
+				'menu-item-status'    => 'publish',
+			)
+			);
+		}
+
+		update_option( self::OPTION_MENU, (int) $menu_id, false );
+		return (int) $menu_id;
+	}
+
+	private function configure_site_shell( $welcome_page_id, $menu_id ) {
+		if ( ! get_option( self::OPTION_SITE_STATE, false ) ) {
+			$locations = get_theme_mod( 'nav_menu_locations', array() );
+			update_option(
+				self::OPTION_SITE_STATE,
+				array(
+					'show_on_front'     => get_option( 'show_on_front' ),
+					'page_on_front'     => get_option( 'page_on_front' ),
+					'nav_menu_locations' => is_array( $locations ) ? $locations : array(),
+				),
+				false
+			);
+		}
+
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', (int) $welcome_page_id );
+
+		if ( $menu_id ) {
+			$locations = get_theme_mod( 'nav_menu_locations', array() );
+			$registered = get_registered_nav_menus();
+			if ( is_array( $registered ) && ! empty( $registered ) ) {
+				$location = array_key_first( $registered );
+				$locations[ $location ] = (int) $menu_id;
+				set_theme_mod( 'nav_menu_locations', $locations );
+			}
+		}
+		update_option( self::OPTION_WELCOME_PAGE, (int) $welcome_page_id, false );
+	}
+
+	private function restore_site_shell() {
+		$state = get_option( self::OPTION_SITE_STATE, false );
+		if ( is_array( $state ) ) {
+			update_option( 'show_on_front', $state['show_on_front'] );
+			update_option( 'page_on_front', $state['page_on_front'] );
+			set_theme_mod( 'nav_menu_locations', (array) $state['nav_menu_locations'] );
+			delete_option( self::OPTION_SITE_STATE );
+		}
+		delete_option( self::OPTION_WELCOME_PAGE );
+	}
+
+	private function table_exists( $table ) {
+		global $wpdb;
+		$table = preg_replace( '/[^A-Za-z0-9_]/', '', (string) $table );
+		return '' !== $table && $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table;
+	}
+
 	public function handle_quick_login() {
 		$login = isset( $_GET['lug_demo_login'] ) ? sanitize_user( wp_unslash( $_GET['lug_demo_login'] ) ) : '';
 		$user  = $login ? get_user_by( 'login', $login ) : false;
@@ -114,6 +869,28 @@ final class LUG_Demo {
 		wp_set_auth_cookie( $user->ID, false, is_ssl() );
 		wp_safe_redirect( home_url( '/' ) );
 		exit;
+	}
+
+	public function render_account_directory() {
+		$output = '<div class="lug-demo-account-directory"><h2>' . esc_html__( 'Try a demo account', 'lug-demo' ) . '</h2><p>' . esc_html__( 'Use any of these fictional accounts to explore the site from a different perspective. You can always return to this page and try another one.', 'lug-demo' ) . '</p><div class="lug-demo-accounts">';
+
+		foreach ( $this->account_fixtures() as $account ) {
+			$user = get_user_by( 'login', $account['login'] );
+			if ( ! $user || self::BATCH_ID !== get_user_meta( $user->ID, self::USER_META_BATCH, true ) ) {
+				continue;
+			}
+
+			$login_url = add_query_arg(
+				array(
+					'action'         => 'lug_demo',
+					'lug_demo_login' => $account['login'],
+				),
+				wp_login_url()
+			);
+			$output .= '<article class="lug-demo-account"><h3>' . esc_html( $account['display_name'] ) . '</h3><p>' . esc_html( $account['description'] ) . '</p><p><strong>' . esc_html__( 'Login:', 'lug-demo' ) . '</strong> <code>' . esc_html( $account['login'] ) . '</code><br><strong>' . esc_html__( 'Password:', 'lug-demo' ) . '</strong> <code>' . esc_html( $account['password'] ) . '</code></p><p><a class="button" href="' . esc_url( $login_url ) . '">' . esc_html__( 'Explore as this account', 'lug-demo' ) . '</a></p></article>';
+		}
+
+		return $output . '</div></div>';
 	}
 
 	private function account_fixtures() {

@@ -1,0 +1,38 @@
+name: Deploy LUG Demo plugin
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy plugin over SFTP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out plugin
+        uses: actions/checkout@v4
+
+      - name: Validate deployment settings
+        env:
+          SFTP_USER: ${{ secrets.SFTP_USER }}
+          SFTP_PASS: ${{ secrets.SFTP_PASS }}
+          SFTP_PATH: ${{ vars.sftp_path }}
+        run: |
+          test -n "$SFTP_USER" || { echo "Missing SFTP_USER secret" >&2; exit 1; }
+          test -n "$SFTP_PASS" || { echo "Missing SFTP_PASS secret" >&2; exit 1; }
+          test -n "$SFTP_PATH" || { echo "Missing sftp_path repository variable" >&2; exit 1; }
+
+      - name: Deploy plugin directory
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.5
+        with:
+          server: ftp.steelcitylug.com
+          username: ${{ secrets.SFTP_USER }}
+          password: ${{ secrets.SFTP_PASS }}
+          local_path: './*'
+          # sftp_path is configured with its trailing slash, e.g. /.../plugins/
+          remote_path: ${{ vars.sftp_path }}lug-demo
+          sftp_only: true
+          delete_remote_files: false

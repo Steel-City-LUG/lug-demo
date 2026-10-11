@@ -7,13 +7,42 @@ This repository is intentionally separate from `lug-platform`. It should not be 
 ## Current scope
 
 - Admin screen for seed/rebuild and reset.
-- Batch-owned, idempotent demo accounts:
-  - `demo` / `demo`
-  - `demo1` / `demo1`
-- Adapter contract for the other installed plugins.
+- A welcoming account directory with one-click demo login links.
+- A sandbox for all demo accounts: WordPress dashboard, settings, user administration, plugin/theme installation, updates, and site configuration are blocked. Only explicitly allowlisted LUG plugin screens and `lug_` plugin actions remain available.
+- Batch-owned, idempotent demo accounts for members, organizers, builders, families, volunteers, and new visitors.
+- A dedicated `demo-super` account for trying lug-core inventory management and its member editor. It is still sandboxed: WordPress settings, plugin/theme/core management, and unrelated admin screens remain blocked.
+- Seeded WordPress pages and a generated demo navigation menu.
+- Seeded events through the installed `lug-core` event provider.
+- Seeded events are explicitly owned by `demo1` so the organizer account can open an existing event and try its edit, shift, signup, sharing, and management workflows without first completing the event form.
+- Seeded event shifts with realistic capacities and member signups.
+- Seeded bbPress forums, topics, and replies.
+- Seeded BuddyPress activity updates.
+- Seeded member profile metadata and Pittsburgh-area ZIP codes for the location tools.
+- Assigns demo members to the installed officer roles and restores previous assignments on reset.
+- Reports the availability of the surrounding LUG tools from the demo admin screen, including officers, ZIP map, welcome messages, Discord, and layout tools.
+- Showcase guidance for the complete Steel City LUG plugin family. The target demo site is expected to have the companion plugins installed; local smoke tests may still skip integrations that are not present in the development checkout.
 - Quick-login URLs after seeding:
   - `?lug_demo_login=demo`
   - `?lug_demo_login=demo1`
+  - `?lug_demo_login=demo-super`
+
+The plugin is intentionally private to `lugtools.steelcitylug.com`. Its fixtures are designed to make that site feel like an established local LUG where visitors can explore the complete toolset. It is not intended for distribution to other LUG sites.
+
+## Seed and reset contract
+
+Use **LUG Demo → Seed / rebuild demo** after enabling or updating the installed plugins. The seed operation clears the previous batch-owned records before recreating them. Reset removes only records tracked by this plugin, including demo users, pages, navigation, events, forums, topics, replies, and BuddyPress activity.
+
+Each operation records a report in the admin screen. On lugtools.steelcitylug.com, a missing companion plugin is a deployment/setup defect to fix, not an alternate demo mode. If an adapter returns an error, the operation remains visible as a warning instead of appearing silently successful.
+
+The showcase covers lug-core, brick-by-numbers, officers, member ZIP/location tools, welcome messages, layout designer, rotating displays, BuddyPress, bbPress, Discord connections, AFOL badges, and the supporting forum/member plugins.
+
+## Local smoke test
+
+When the local web runtime is available, run `tests/smoke.php` with the same PHP configuration used by the WordPress server. The test seeds the demo, checks the created records, resets them, and verifies that the original front-page settings are restored:
+
+```text
+php -c "C:\path\to\runtime\php.ini" tests/smoke.php
+```
 
 ## Adapter contract
 
