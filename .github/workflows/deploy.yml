@@ -18,8 +18,8 @@ jobs:
 
       - name: Validate deployment settings
         env:
-          SFTP_USER: ${{ secrets.SFTP_USER }}
-          SFTP_PASS: ${{ secrets.SFTP_PASS }}
+          SFTP_USER: ${{ secrets.sftp_user }}
+          SFTP_PASS: ${{ secrets.sftp_pass }}
           SFTP_PATH: ${{ vars.sftp_path }}
         run: |
           test -n "$SFTP_USER" || { echo "Missing SFTP_USER secret" >&2; exit 1; }
@@ -36,8 +36,8 @@ jobs:
         uses: wlixcc/SFTP-Deploy-Action@v1.2.5
         with:
           server: ftp.steelcitylug.com
-          username: ${{ secrets.SFTP_USER }}
-          password: ${{ secrets.SFTP_PASS }}
+          username: ${{ secrets.sftp_user }}
+          password: ${{ secrets.sftp_pass }}
           local_path: './*'
           remote_path: ${{ steps.path.outputs.remote }}
           sftp_only: true
