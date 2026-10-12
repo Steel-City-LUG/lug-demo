@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    name: Deploy plugin over SFTP
+    name: Deploy plugin over FTPS
     runs-on: ubuntu-latest
     environment: prod
     timeout-minutes: 10
@@ -34,12 +34,12 @@ jobs:
         run: echo "remote=${SFTP_PATH%/}/lug-demo" >> "$GITHUB_OUTPUT"
 
       - name: Deploy plugin directory
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ftp.steelcitylug.com
           username: ${{ secrets.ftp_user }}
           password: ${{ secrets.sftp_pass }}
-          local_path: './*'
-          remote_path: ${{ steps.path.outputs.remote }}
-          sftp_only: true
-          delete_remote_files: false
+          protocol: ftps
+          local-dir: ./
+          server-dir: ${{ steps.path.outputs.remote }}/
+          dangerous-clean-slate: false
