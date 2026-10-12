@@ -694,6 +694,7 @@ final class LUG_Demo {
 	}
 
 	public function seed_event_shifts( $batch_id ) {
+		$this->ensure_event_shift_schema();
 		if ( ! function_exists( 'lug_event_shift_save' ) || ! function_exists( 'lug_event_shifts_table_exists' ) || ! lug_event_shifts_table_exists() ) {
 			return;
 		}
@@ -765,6 +766,36 @@ final class LUG_Demo {
 		}
 
 		update_option( self::OPTION_SHIFTS, $shift_ids, false );
+	}
+
+	private function ensure_event_shift_schema() {
+		if ( ! function_exists( 'dbDelta' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		}
+		global $wpdb;
+		$charset = $wpdb->get_charset_collate();
+		dbDelta( "CREATE TABLE lug_events_shifts (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			event bigint(20) unsigned NOT NULL DEFAULT 0,
+			name varchar(255) NOT NULL DEFAULT '',
+			cups decimal(10,2) NOT NULL DEFAULT 0,
+			cap int(11) NOT NULL DEFAULT 0,
+			displaydate tinyint(3) NOT NULL DEFAULT 3,
+			start_date datetime NULL,
+			end_date datetime NULL,
+			locked tinyint(1) NOT NULL DEFAULT 0,
+			PRIMARY KEY  (id),
+			KEY event (event),
+			KEY start_date (start_date)
+		) ENGINE=InnoDB {$charset};" );
+		dbDelta( "CREATE TABLE lug_events_participants (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			user_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			shift bigint(20) unsigned NOT NULL DEFAULT 0,
+			PRIMARY KEY  (id),
+			UNIQUE KEY user_shift (user_id,shift),
+			KEY shift (shift)
+		) ENGINE=InnoDB {$charset};" );
 	}
 
 	public function reset_event_shifts( $batch_id ) {
