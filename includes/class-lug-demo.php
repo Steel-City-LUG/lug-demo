@@ -651,14 +651,18 @@ final class LUG_Demo {
 			return;
 		}
 		$now = current_time( 'mysql' );
-		$wpdb->insert( $events_table, array( 'name' => 'Build Along: Steel City Landmarks', 'message' => 'Find the hidden landmarks, scan the QR code, and build along from your phone.', 'lug_event' => $current_event_id, 'active' => 1, 'started' => 0, 'completed' => 0, 'updated_by' => get_current_user_id(), 'created_at' => $now, 'updated_at' => $now ) );
+		$event_columns = array_map( 'strtolower', (array) $wpdb->get_col( "DESCRIBE `{$events_table}`", 0 ) );
+		$event_data = array( 'name' => 'Build Along: Steel City Landmarks', 'message' => 'Find the hidden landmarks, scan the QR code, and build along from your phone.', 'lug_event' => $current_event_id, 'active' => 1, 'started' => 0, 'completed' => 0, 'updated_by' => get_current_user_id(), 'created_at' => $now, 'updated_at' => $now );
+		$wpdb->insert( $events_table, array_intersect_key( $event_data, array_flip( $event_columns ) ) );
 		$ispy_id = (int) $wpdb->insert_id;
 		if ( ! $ispy_id ) {
 			return;
 		}
 		$item_names = array( 'Steel City bridge', 'Neighborhood row house', 'LUG meetup sign', 'Three-color mosaic', 'Hidden minifigure' );
+		$item_columns = array_map( 'strtolower', (array) $wpdb->get_col( "DESCRIBE `{$items_table}`", 0 ) );
 		foreach ( $item_names as $priority => $name ) {
-			$wpdb->insert( $items_table, array( 'event' => $ispy_id, 'priority' => $priority + 1, 'name' => $name, 'hint_image_id' => 0, 'hint_members_only' => 0, 'lasteditor' => get_current_user_id(), 'edited' => $now ) );
+			$item_data = array( 'event' => $ispy_id, 'priority' => $priority + 1, 'name' => $name, 'hint_image_id' => 0, 'hint_members_only' => 0, 'lasteditor' => get_current_user_id(), 'edited' => $now );
+			$wpdb->insert( $items_table, array_intersect_key( $item_data, array_flip( $item_columns ) ) );
 		}
 		update_option( self::OPTION_ISPY, array( $ispy_id ), false );
 	}
