@@ -64,7 +64,7 @@ return array(
 			),
 			array(
 				'title'   => 'Try it: share an I-Spy event from the public view',
-				'content' => 'Open the event as a visitor, inspect the I-Spy progress and public sharing controls, copy the public link, and use the QR action to create a phone-friendly handoff. Then log in as demo1 and compare the organizer/edit controls. The public route should be useful even when the visitor is not signed in.',
+				'content' => 'Open the event as a visitor, inspect the I-Spy progress and public sharing controls, copy the public link, and use the QR action to create a phone-friendly handoff. Then log in as lug-demo-organizer and compare the organizer/edit controls. The public route should be useful even when the visitor is not signed in.',
 				'replies' => array(
 					array( 'content' => 'Use the current event for the live walkthrough and the recent event to compare what a completed or closed event looks like.' ),
 					array( 'content' => 'The demo site is deliberately assembled with the complete plugin family. If one of these surfaces is missing, treat that as a deployment/setup issue and restore the showcase plugin set before evaluating the workflow.' ),
