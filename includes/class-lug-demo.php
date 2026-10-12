@@ -655,6 +655,10 @@ final class LUG_Demo {
 		if ( ! $current_event_id ) {
 			return;
 		}
+		// LUG Core's public I-Spy gate consumes the linked event end date as a
+		// local calendar date. Keep the current showcase event publicly active
+		// while preserving the full datetime on the past and future fixtures.
+		$wpdb->update( 'lug_events', array( 'end_date' => wp_date( 'Y-m-d', strtotime( '+1 day', current_time( 'timestamp' ) ) ) ), array( 'id' => $current_event_id ), array( '%s' ), array( '%d' ) );
 		$now = current_time( 'mysql' );
 		$event_columns = array_map( 'strtolower', (array) $wpdb->get_col( "DESCRIBE `{$events_table}`", 0 ) );
 		$event_data = array( 'name' => 'Build Along: Steel City Landmarks', 'message' => 'Find the hidden landmarks, scan the QR code, and build along from your phone.', 'lug_event' => $current_event_id, 'active' => 1, 'started' => 0, 'completed' => 0, 'updated_by' => get_current_user_id(), 'created_at' => $now, 'updated_at' => $now );
