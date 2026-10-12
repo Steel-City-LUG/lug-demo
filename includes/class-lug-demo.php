@@ -740,6 +740,7 @@ final class LUG_Demo {
 			}
 
 			$forum_ids[] = (int) $forum_id;
+			update_post_meta( (int) $forum_id, '_lug_demo_batch_id', $batch_id );
 			foreach ( (array) $forum_fixture['topics'] as $topic_fixture ) {
 				$topic_id = bbp_insert_topic(
 					array(
@@ -756,6 +757,7 @@ final class LUG_Demo {
 				}
 
 				$topic_ids[] = (int) $topic_id;
+				update_post_meta( (int) $topic_id, '_lug_demo_batch_id', $batch_id );
 				foreach ( (array) $topic_fixture['replies'] as $index => $reply ) {
 					$reply_id = bbp_insert_reply(
 						array(
@@ -769,6 +771,7 @@ final class LUG_Demo {
 
 					if ( $reply_id && ! is_wp_error( $reply_id ) ) {
 						$reply_ids[] = (int) $reply_id;
+						update_post_meta( (int) $reply_id, '_lug_demo_batch_id', $batch_id );
 					}
 				}
 			}
@@ -791,6 +794,22 @@ final class LUG_Demo {
 			wp_delete_post( (int) $post_id, true );
 		}
 		foreach ( $forum_ids as $post_id ) {
+			wp_delete_post( (int) $post_id, true );
+		}
+
+		// Also remove orphaned records from older or interrupted seed runs.
+		$orphaned_ids = get_posts(
+			array(
+				'post_type'      => array( 'bbp_forum', 'bbp_topic', 'bbp_reply' ),
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+				'meta_key'       => '_lug_demo_batch_id',
+				'meta_value'     => $batch_id,
+			)
+		);
+		foreach ( $orphaned_ids as $post_id ) {
 			wp_delete_post( (int) $post_id, true );
 		}
 

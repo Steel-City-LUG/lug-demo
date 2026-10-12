@@ -6,6 +6,69 @@
 	background: #f7f9fb;
 }
 
+/* Give the showcase the same calm, editorial feel as the LUG Platform site:
+ * generous spacing, warm panels, and clear calls to action. */
+body {
+	background: #fbfcf8;
+	color: #20282a;
+}
+
+.wp-site-blocks > header,
+.wp-site-blocks > main,
+.wp-site-blocks > footer {
+	max-width: 72rem;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.wp-site-blocks > header {
+	border-bottom: 1px solid #dfe4dc;
+	padding: 1rem 1.25rem;
+}
+
+.wp-site-blocks > main {
+	padding: 2rem 1.25rem 1rem;
+}
+
+.wp-site-blocks > main h1 {
+	max-width: 15ch;
+	font-size: clamp(2.5rem, 7vw, 5rem);
+	line-height: 1.02;
+	letter-spacing: -.04em;
+}
+
+.wp-site-blocks > main h2 {
+	margin-top: 2.5rem;
+	font-size: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.wp-site-blocks > main a {
+	color: #126b5b;
+}
+
+.wp-site-blocks > main a[href^="/events/"],
+.wp-site-blocks > main a[href^="/inventory/"],
+.wp-site-blocks > main a[href^="/ispy/"],
+.wp-site-blocks > main a[href^="/build-along"] {
+	display: inline-block;
+	margin: .35rem .35rem .35rem 0;
+	padding: .65rem .9rem;
+	border-radius: .4rem;
+	background: #126b5b;
+	color: #fff;
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.lug-demo-plugin-tour,
+.lug-demo-account-directory {
+	box-shadow: 0 10px 30px rgba(32, 40, 42, .06);
+}
+
+.lug-demo-footer {
+	margin-top: 4rem;
+}
+
 .lug-demo-accounts {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
