@@ -24,6 +24,7 @@ final class LUG_Demo {
 	const OPTION_OFFICER_STATE = 'lug_demo_officer_state';
 	const OPTION_REPORT = 'lug_demo_last_report';
 	const OPTION_SEEDED_VERSION = 'lug_demo_seeded_version';
+	const OPTION_PROFILE_STATE = 'lug_demo_profile_state';
 	const USER_META_PROFILE_BATCH = '_lug_demo_profile_batch_id';
 	const USER_META_BATCH = '_lug_demo_batch_id';
 	const USER_META_SUPER = '_lug_demo_super';
@@ -352,7 +353,16 @@ final class LUG_Demo {
 
 			update_user_meta( $user->ID, self::USER_META_PROFILE_BATCH, $batch_id );
 			foreach ( $profile as $key => $value ) {
-				update_user_meta( $user->ID, sanitize_key( $key ), sanitize_text_field( $value ) );
+				$meta_key = sanitize_key( $key );
+				$state    = (array) get_option( self::OPTION_PROFILE_STATE, array() );
+				if ( ! isset( $state[ $user->ID ][ $meta_key ] ) ) {
+					$state[ $user->ID ][ $meta_key ] = array(
+						'exists' => metadata_exists( 'user', $user->ID, $meta_key ),
+						'value'  => get_user_meta( $user->ID, $meta_key, true ),
+					);
+					update_option( self::OPTION_PROFILE_STATE, $state, false );
+				}
+				update_user_meta( $user->ID, $meta_key, sanitize_text_field( $value ) );
 			}
 
 			if ( function_exists( 'xprofile_set_field_data' ) && ! empty( $profile['zip'] ) ) {
@@ -379,12 +389,17 @@ final class LUG_Demo {
 		);
 
 		foreach ( $users as $user_id ) {
+			$state = (array) get_option( self::OPTION_PROFILE_STATE, array() );
+			foreach ( (array) ( $state[ $user_id ] ?? array() ) as $meta_key => $previous ) {
+				if ( ! empty( $previous['exists'] ) ) {
+					update_user_meta( $user_id, $meta_key, $previous['value'] );
+				} else {
+					delete_user_meta( $user_id, $meta_key );
+				}
+			}
 			delete_user_meta( $user_id, self::USER_META_PROFILE_BATCH );
-			delete_user_meta( $user_id, 'zip' );
-			delete_user_meta( $user_id, 'lug_member_type' );
-			delete_user_meta( $user_id, 'lug_primary_interest' );
-			delete_user_meta( $user_id, 'lug_home_region' );
 		}
+		delete_option( self::OPTION_PROFILE_STATE );
 	}
 
 	public function seed_officer_assignments( $batch_id ) {
