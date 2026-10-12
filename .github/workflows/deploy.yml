@@ -19,7 +19,7 @@ jobs:
 
       - name: Validate deployment settings
         env:
-          SFTP_USER: ${{ secrets.sftp_user }}
+          SFTP_USER: ${{ secrets.ftp_user }}
           SFTP_PASS: ${{ secrets.sftp_pass }}
           SFTP_PATH: ${{ vars.sftp_path }}
         run: |
@@ -37,7 +37,7 @@ jobs:
         uses: wlixcc/SFTP-Deploy-Action@v1.2.5
         with:
           server: ftp.steelcitylug.com
-          username: ${{ secrets.sftp_user }}
+          username: ${{ secrets.ftp_user }}
           password: ${{ secrets.sftp_pass }}
           local_path: './*'
           remote_path: ${{ steps.path.outputs.remote }}
