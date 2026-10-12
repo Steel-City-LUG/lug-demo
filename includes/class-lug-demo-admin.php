@@ -51,7 +51,7 @@ final class LUG_Demo_Admin {
 		return array(
 			'WordPress content' => true,
 			'User accounts'    => true,
-			'LUG events'       => function_exists( 'lug_event_provider_available' ) && lug_event_provider_available(),
+			'LUG Core events'  => ( function_exists( 'lug_event_provider_available' ) && lug_event_provider_available() ) || function_exists( 'lug_event_provider_table' ),
 			'Event shifts'     => function_exists( 'lug_event_shift_save' ) && function_exists( 'lug_event_shifts_table_exists' ) && lug_event_shifts_table_exists(),
 			'Brick by Numbers' => defined( 'BBN_VERSION' ),
 			'bbPress forums'   => function_exists( 'bbp_insert_forum' ),
@@ -62,7 +62,7 @@ final class LUG_Demo_Admin {
 			'Welcome messages' => function_exists( 'lug_welcome_pm_send_welcome_message_result' ),
 			'Discord bridge'   => defined( 'LUG_BBP_DISCORD_VERSION' ) || defined( 'LUG_DISCORD_CONNECT_VERSION' ),
 			'Layout tools'     => defined( 'LUG_LAYOUT_PLUGIN_VERSION' ) || defined( 'LUG_RD_VERSION' ),
-			'Forum reply sorting' => function_exists( 'user_reply_sorting_for_forums' ) || defined( 'URSF_VERSION' ),
+			'BuddyPress Messages' => function_exists( 'messages_new_message' ) || function_exists( 'messages_get_unread_count' ),
 		);
 	}
 }

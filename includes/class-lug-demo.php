@@ -25,6 +25,7 @@ final class LUG_Demo {
 	const OPTION_REPORT = 'lug_demo_last_report';
 	const OPTION_SEEDED_VERSION = 'lug_demo_seeded_version';
 	const OPTION_PROFILE_STATE = 'lug_demo_profile_state';
+	const OPTION_SYSTEM_SENDER_STATE = 'lug_demo_system_sender_state';
 	const USER_META_PROFILE_BATCH = '_lug_demo_profile_batch_id';
 	const USER_META_BATCH = '_lug_demo_batch_id';
 	const USER_META_SUPER = '_lug_demo_super';
@@ -322,9 +323,24 @@ final class LUG_Demo {
 				}
 			}
 		}
+
+		$system = get_user_by( 'login', 'system-messages' );
+		if ( $system && function_exists( 'get_option' ) ) {
+			$previous = get_option( 'lug_system_message_sender_id', null );
+			if ( ! get_option( self::OPTION_SYSTEM_SENDER_STATE, false ) ) {
+				update_option( self::OPTION_SYSTEM_SENDER_STATE, array( 'exists' => false !== $previous, 'value' => $previous ), false );
+			}
+			update_option( 'lug_system_message_sender_id', (int) $system->ID, false );
+		}
 	}
 
 	public function reset_accounts( $batch_id ) {
+		$sender_state = get_option( self::OPTION_SYSTEM_SENDER_STATE, false );
+		if ( is_array( $sender_state ) ) {
+			if ( ! empty( $sender_state['exists'] ) ) update_option( 'lug_system_message_sender_id', $sender_state['value'], false );
+			else delete_option( 'lug_system_message_sender_id' );
+			delete_option( self::OPTION_SYSTEM_SENDER_STATE );
+		}
 		if ( ! function_exists( 'wp_delete_user' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/user.php';
 		}

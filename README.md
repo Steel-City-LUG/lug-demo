@@ -13,6 +13,7 @@ This repository is intentionally separate from `lug-platform`. It should not be 
 - Batch-owned, idempotent demo accounts for members, organizers, builders, families, volunteers, and new visitors.
 - Existing non-demo users are never overwritten or deleted if their login collides with a fixture account.
 - A dedicated `demo-super` account for trying lug-core inventory management and its member editor. It is still sandboxed: WordPress settings, plugin/theme/core management, and unrelated admin screens remain blocked.
+- A `system-messages` account configured as lug-core's default sender for welcome messages and member notifications.
 - Seeded WordPress pages and a generated demo navigation menu.
 - Seeded events through the installed `lug-core` event provider.
 - Seeded events are explicitly owned by `demo1` so the organizer account can open an existing event and try its edit, shift, signup, sharing, and management workflows without first completing the event form.
@@ -36,7 +37,7 @@ Use **LUG Demo → Seed / rebuild demo** after enabling or updating the installe
 
 Each operation records a report in the admin screen. On lugtools.steelcitylug.com, a missing companion plugin is a deployment/setup defect to fix, not an alternate demo mode. If an adapter returns an error, the operation remains visible as a warning instead of appearing silently successful.
 
-The showcase covers lug-core, brick-by-numbers, officers, member ZIP/location tools, welcome messages, layout designer, rotating displays, BuddyPress, bbPress, Discord connections, AFOL badges, and the supporting forum/member plugins.
+The showcase covers lug-core events, inventory, and I-Spy; brick-by-numbers; officers; member ZIP/location tools; welcome messages; BuddyPress Messages; layout designer; rotating displays; AFOL badges; BuddyPress; bbPress; Discord connections; and the supporting member plugins.
 
 ## Local smoke test
 

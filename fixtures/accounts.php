@@ -2,6 +2,14 @@
 
 return array(
 	array(
+		'login'        => 'system-messages',
+		'password'     => 'system-messages',
+		'email'        => 'system-messages@example.invalid',
+		'display_name' => 'LUG System Messages',
+		'role'         => 'subscriber',
+		'description'  => 'System sender account used to demonstrate welcome messages and member notifications.',
+	),
+	array(
 		'login'        => 'demo',
 		'password'     => 'demo',
 		'email'        => 'demo@example.invalid',
