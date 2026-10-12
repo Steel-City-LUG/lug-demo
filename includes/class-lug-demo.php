@@ -648,6 +648,11 @@ final class LUG_Demo {
 			}
 		}
 		if ( ! $current_event_id ) {
+			// Keep the public challenge available even if the event provider's
+			// date format differs from the WordPress site clock.
+			$current_event_id = ! empty( $event_ids ) ? (int) reset( $event_ids ) : 0;
+		}
+		if ( ! $current_event_id ) {
 			return;
 		}
 		$now = current_time( 'mysql' );
