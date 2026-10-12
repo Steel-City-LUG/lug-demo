@@ -47,3 +47,24 @@
 .lug-demo-plugin-tour li {
 	margin-bottom: .6rem;
 }
+
+/* Replace the stock block-theme footer links (Shop, Patterns, Themes, etc.)
+ * with the demo-specific footer rendered by LUG Demo. */
+footer.wp-block-template-part {
+	display: none !important;
+}
+
+.lug-demo-footer {
+	border-top: 1px solid #d7dde5;
+	margin: 3rem auto 0;
+	max-width: 72rem;
+	padding: 1.25rem 1rem 2rem;
+	text-align: center;
+}
+
+.lug-demo-footer nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	justify-content: center;
+}

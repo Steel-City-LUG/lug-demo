@@ -8,7 +8,7 @@ $future_meeting = wp_date( 'Y-m-d', strtotime( '+21 days', $demo_now ) );
 return array(
 	array(
 		'name'                => 'Steel City LUG monthly meetup (recent)',
-		'creator_login'       => 'demo1',
+		'creator_login'       => 'lug-demo-organizer',
 		'start_date'          => $past_meeting . ' 18:30:00',
 		'end_date'            => $past_meeting . ' 20:30:00',
 		'description'         => 'A welcoming monthly meetup for builders, collectors, families, and anyone curious about the hobby. Bring a project, ask questions, or just come say hello.',
@@ -22,7 +22,7 @@ return array(
 	),
 	array(
 		'name'                => 'Beginner workshop: build your first display (in progress)',
-		'creator_login'       => 'demo1',
+		'creator_login'       => 'lug-demo-organizer',
 		'start_date'          => $current_meeting . ' 00:00:00',
 		'end_date'            => wp_date( 'Y-m-d H:i:s', strtotime( '+24 hours', $demo_now ) ),
 		'description'         => 'A hands-on workshop covering planning, building techniques, and how to make a small display look great. Parts and examples are provided.',
@@ -36,7 +36,7 @@ return array(
 	),
 	array(
 		'name'                => 'Summer public display planning night (upcoming)',
-		'creator_login'       => 'demo1',
+		'creator_login'       => 'lug-demo-organizer',
 		'start_date'          => $future_meeting . ' 19:00:00',
 		'end_date'            => $future_meeting . ' 21:00:00',
 		'description'         => 'Help plan the group display for the summer community festival. We will assign tables, review the theme, and coordinate transport and volunteer shifts.',

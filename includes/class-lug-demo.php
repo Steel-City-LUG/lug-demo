@@ -59,6 +59,7 @@ final class LUG_Demo {
 		add_action( 'admin_post_lug_demo_seed', array( $this, 'handle_seed' ) );
 		add_action( 'admin_post_lug_demo_reset', array( $this, 'handle_reset' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
+		add_action( 'wp_footer', array( $this, 'render_demo_footer' ), 20 );
 		add_action( 'admin_init', array( $this, 'enforce_admin_sandbox' ), 1 );
 		add_filter( 'user_has_cap', array( $this, 'restrict_sandbox_capabilities' ), 99, 4 );
 		add_filter( 'lug_inventory_manager_user_ids', array( $this, 'add_demo_inventory_managers' ) );
@@ -143,6 +144,10 @@ final class LUG_Demo {
 			array(),
 			LUG_DEMO_VERSION
 		);
+	}
+
+	public function render_demo_footer() {
+		echo '<footer class="lug-demo-footer"><p><strong>' . esc_html__( 'Steel City LUG tools demo', 'lug-demo' ) . '</strong> — ' . esc_html__( 'Explore freely; the site can be reset to its starting point.', 'lug-demo' ) . '</p><nav aria-label="' . esc_attr__( 'Demo links', 'lug-demo' ) . '"><a href="' . esc_url( home_url( '/plugin-tour/' ) ) . '">' . esc_html__( 'Plugin tour', 'lug-demo' ) . '</a><a href="' . esc_url( home_url( '/getting-started/' ) ) . '">' . esc_html__( 'Getting started', 'lug-demo' ) . '</a><a href="' . esc_url( home_url( '/build-along-on-your-phone/' ) ) . '">' . esc_html__( 'Build along on your phone', 'lug-demo' ) . '</a></nav></footer>';
 	}
 
 	public function restrict_sandbox_capabilities( $allcaps, $caps, $args, $user ) {
@@ -431,9 +436,9 @@ final class LUG_Demo {
 
 		$this->reset_officer_assignments( $batch_id );
 		$assignments = array(
-			'President'  => 'demo1',
-			'Secretary'  => 'demo',
-			'Ambassador' => 'demo1',
+			'President'  => 'lug-demo-organizer',
+			'Secretary'  => 'lug-demo-member',
+			'Ambassador' => 'lug-demo-organizer',
 			'Treasurer'  => 'demo-super',
 		);
 		$previous = array();
@@ -559,7 +564,7 @@ final class LUG_Demo {
 		$event_ids = array();
 
 		foreach ( (array) $events as $event ) {
-			$organizer = ! empty( $event['creator_login'] ) ? get_user_by( 'login', $event['creator_login'] ) : get_user_by( 'login', 'demo1' );
+			$organizer = ! empty( $event['creator_login'] ) ? get_user_by( 'login', $event['creator_login'] ) : get_user_by( 'login', 'lug-demo-organizer' );
 			$creator   = $organizer ? (int) $organizer->ID : get_current_user_id();
 			$data = array(
 				'name'                => $event['name'],
@@ -625,7 +630,7 @@ final class LUG_Demo {
 		$fixtures  = require LUG_DEMO_DIR . 'fixtures/shifts.php';
 		$shift_ids = array();
 		$signup_users = array();
-		foreach ( array( 'demo', 'demo1' ) as $login ) {
+		foreach ( array( 'lug-demo-member', 'lug-demo-organizer' ) as $login ) {
 			$user = get_user_by( 'login', $login );
 			if ( $user ) {
 				$signup_users[] = (int) $user->ID;
@@ -711,8 +716,8 @@ final class LUG_Demo {
 		}
 
 		$this->reset_forums( $batch_id );
-		$moderator = get_user_by( 'login', 'demo1' );
-		$member    = get_user_by( 'login', 'demo' );
+		$moderator = get_user_by( 'login', 'lug-demo-organizer' );
+		$member    = get_user_by( 'login', 'lug-demo-member' );
 		$author_id = $moderator ? (int) $moderator->ID : get_current_user_id();
 		$member_id = $member ? (int) $member->ID : $author_id;
 		$forums    = require LUG_DEMO_DIR . 'fixtures/forums.php';
@@ -803,7 +808,7 @@ final class LUG_Demo {
 		$fixtures  = require LUG_DEMO_DIR . 'fixtures/activity.php';
 		$activity  = array();
 		$users     = array();
-		foreach ( array( 'demo', 'demo1' ) as $login ) {
+		foreach ( array( 'lug-demo-member', 'lug-demo-organizer' ) as $login ) {
 			$user = get_user_by( 'login', $login );
 			if ( $user ) {
 				$users[] = (int) $user->ID;
@@ -850,6 +855,7 @@ final class LUG_Demo {
 			'welcome-to-the-demo-lug' => __( 'Home', 'lug-demo' ),
 			'getting-started'         => __( 'Getting Started', 'lug-demo' ),
 			'plugin-tour'             => __( 'Plugin Tour', 'lug-demo' ),
+			'active-tools'            => __( 'All Active Tools', 'lug-demo' ),
 			'build-along-on-your-phone' => __( 'Build Along on Your Phone', 'lug-demo' ),
 			'about-this-demo'         => __( 'About the Demo', 'lug-demo' ),
 			'community-guidelines'    => __( 'Guidelines', 'lug-demo' ),

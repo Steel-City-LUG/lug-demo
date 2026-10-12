@@ -55,7 +55,7 @@ $activity = count( (array) get_option( LUG_Demo::OPTION_ACTIVITY, array() ) );
 
 $event_table = function_exists( 'lug_event_provider_table' ) ? lug_event_provider_table() : 'lug_events';
 $event_rows  = (array) $wpdb->get_results( "SELECT start_date, end_date, status, creator FROM `{$event_table}` WHERE id IN (" . implode( ',', array_map( 'absint', (array) get_option( LUG_Demo::OPTION_EVENTS, array() ) ) ) . ')', ARRAY_A );
-$organizer   = get_user_by( 'login', 'demo1' );
+$organizer   = get_user_by( 'login', 'lug-demo-organizer' );
 $timeline    = array( 'past' => 0, 'current' => 0, 'future' => 0 );
 $now         = current_time( 'timestamp' );
 foreach ( $event_rows as $event_row ) {
