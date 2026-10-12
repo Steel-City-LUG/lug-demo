@@ -19,6 +19,7 @@ final class LUG_Demo {
 	const OPTION_REPLIES = 'lug_demo_reply_ids';
 	const OPTION_ACTIVITY = 'lug_demo_activity_ids';
 	const OPTION_SHIFTS   = 'lug_demo_shift_ids';
+	const OPTION_ISPY     = 'lug_demo_ispy_ids';
 	const OPTION_SITE_STATE = 'lug_demo_site_state';
 	const OPTION_WELCOME_PAGE = 'lug_demo_welcome_page';
 	const OPTION_OFFICER_STATE = 'lug_demo_officer_state';
@@ -117,6 +118,11 @@ final class LUG_Demo {
 			'label' => __( 'LUG events', 'lug-demo' ),
 			'run'   => array( $this, 'seed_events' ),
 			'reset' => array( $this, 'reset_events' ),
+		);
+		$adapters['ispy'] = array(
+			'label' => __( 'Active I-Spy challenge', 'lug-demo' ),
+			'run'   => array( $this, 'seed_ispy' ),
+			'reset' => array( $this, 'reset_ispy' ),
 		);
 		$adapters['event_shifts'] = array(
 			'label' => __( 'Event shifts and signups', 'lug-demo' ),
@@ -617,6 +623,61 @@ final class LUG_Demo {
 			}
 		}
 		delete_option( self::OPTION_EVENTS );
+	}
+
+	public function seed_ispy( $batch_id ) {
+		if ( ! function_exists( 'lug_ispy_table_name' ) || ! function_exists( 'lug_ispy_db_table_exists' ) || ! function_exists( 'lug_ispy_run_schema_upgrade' ) ) {
+			return;
+		}
+		lug_ispy_run_schema_upgrade( true );
+		$events_table = lug_ispy_table_name( 'events' );
+		$items_table  = lug_ispy_table_name( 'items' );
+		if ( ! $events_table || ! $items_table || ! lug_ispy_db_table_exists( $events_table ) || ! lug_ispy_db_table_exists( $items_table ) ) {
+			return;
+		}
+
+		$this->reset_ispy( $batch_id );
+		$event_ids = (array) get_option( self::OPTION_EVENTS, array() );
+		$current_event_id = 0;
+		global $wpdb;
+		foreach ( $event_ids as $event_id ) {
+			$row = $wpdb->get_row( $wpdb->prepare( 'SELECT id, start_date, end_date FROM lug_events WHERE id = %d', (int) $event_id ), ARRAY_A );
+			if ( is_array( $row ) && strtotime( (string) $row['start_date'] ) <= current_time( 'timestamp' ) && strtotime( (string) $row['end_date'] ) >= current_time( 'timestamp' ) ) {
+				$current_event_id = (int) $row['id'];
+				break;
+			}
+		}
+		if ( ! $current_event_id ) {
+			return;
+		}
+		$now = current_time( 'mysql' );
+		$wpdb->insert( $events_table, array( 'name' => 'Build Along: Steel City Landmarks', 'message' => 'Find the hidden landmarks, scan the QR code, and build along from your phone.', 'lug_event' => $current_event_id, 'active' => 1, 'started' => 0, 'completed' => 0, 'updated_by' => get_current_user_id(), 'created_at' => $now, 'updated_at' => $now ) );
+		$ispy_id = (int) $wpdb->insert_id;
+		if ( ! $ispy_id ) {
+			return;
+		}
+		$item_names = array( 'Steel City bridge', 'Neighborhood row house', 'LUG meetup sign', 'Three-color mosaic', 'Hidden minifigure' );
+		foreach ( $item_names as $priority => $name ) {
+			$wpdb->insert( $items_table, array( 'event' => $ispy_id, 'priority' => $priority + 1, 'name' => $name, 'hint_image_id' => 0, 'hint_members_only' => 0, 'lasteditor' => get_current_user_id(), 'edited' => $now ) );
+		}
+		update_option( self::OPTION_ISPY, array( $ispy_id ), false );
+	}
+
+	public function reset_ispy( $batch_id ) {
+		if ( ! function_exists( 'lug_ispy_table_name' ) || ! function_exists( 'lug_ispy_db_table_exists' ) ) {
+			return;
+		}
+		$events_table = lug_ispy_table_name( 'events' );
+		$items_table  = lug_ispy_table_name( 'items' );
+		if ( ! $events_table || ! $items_table || ! lug_ispy_db_table_exists( $events_table ) || ! lug_ispy_db_table_exists( $items_table ) ) {
+			return;
+		}
+		global $wpdb;
+		foreach ( (array) get_option( self::OPTION_ISPY, array() ) as $ispy_id ) {
+			$wpdb->delete( $items_table, array( 'event' => (int) $ispy_id ), array( '%d' ) );
+			$wpdb->delete( $events_table, array( 'id' => (int) $ispy_id ), array( '%d' ) );
+		}
+		delete_option( self::OPTION_ISPY );
 	}
 
 	public function seed_event_shifts( $batch_id ) {
