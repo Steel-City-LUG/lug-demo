@@ -813,6 +813,35 @@ final class LUG_Demo {
 			wp_delete_post( (int) $post_id, true );
 		}
 
+		// Clean up pre-batch demo records created before batch metadata was added.
+		$fixtures = require LUG_DEMO_DIR . 'fixtures/forums.php';
+		$known_forum_titles = array_values( array_filter( array_map( 'sanitize_text_field', wp_list_pluck( (array) $fixtures, 'title' ) ) ) );
+		$known_topic_titles = array();
+		foreach ( (array) $fixtures as $fixture ) {
+			foreach ( (array) ( $fixture['topics'] ?? array() ) as $topic ) {
+				$known_topic_titles[] = sanitize_text_field( $topic['title'] );
+			}
+		}
+		$known_ids = array();
+		foreach ( array( 'forum' => $known_forum_titles, 'topic' => $known_topic_titles ) as $post_type => $titles ) {
+			foreach ( array_unique( $titles ) as $title ) {
+				foreach ( get_posts( array( 'post_type' => $post_type, 'post_status' => 'any', 'posts_per_page' => -1, 'title' => $title, 'fields' => 'ids' ) ) as $post_id ) {
+					$known_ids[] = (int) $post_id;
+				}
+			}
+		}
+		foreach ( array_unique( $known_ids ) as $post_id ) {
+			$children = get_posts( array( 'post_type' => array( 'forum', 'topic', 'reply' ), 'post_parent' => $post_id, 'post_status' => 'any', 'posts_per_page' => -1, 'fields' => 'ids' ) );
+			foreach ( $children as $child_id ) {
+				$grandchildren = get_posts( array( 'post_type' => array( 'topic', 'reply' ), 'post_parent' => (int) $child_id, 'post_status' => 'any', 'posts_per_page' => -1, 'fields' => 'ids' ) );
+				foreach ( $grandchildren as $grandchild_id ) {
+					wp_delete_post( (int) $grandchild_id, true );
+				}
+				wp_delete_post( (int) $child_id, true );
+			}
+			wp_delete_post( (int) $post_id, true );
+		}
+
 		delete_option( self::OPTION_FORUMS );
 		delete_option( self::OPTION_TOPICS );
 		delete_option( self::OPTION_REPLIES );
