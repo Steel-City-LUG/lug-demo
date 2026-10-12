@@ -23,6 +23,7 @@ final class LUG_Demo {
 	const OPTION_WELCOME_PAGE = 'lug_demo_welcome_page';
 	const OPTION_OFFICER_STATE = 'lug_demo_officer_state';
 	const OPTION_REPORT = 'lug_demo_last_report';
+	const OPTION_SEEDED_VERSION = 'lug_demo_seeded_version';
 	const USER_META_PROFILE_BATCH = '_lug_demo_profile_batch_id';
 	const USER_META_BATCH = '_lug_demo_batch_id';
 	const USER_META_SUPER = '_lug_demo_super';
@@ -62,6 +63,29 @@ final class LUG_Demo {
 		add_filter( 'lug_demo_seed_adapters', array( $this, 'register_core_adapter' ) );
 		add_shortcode( 'lug_demo_accounts', array( $this, 'render_account_directory' ) );
 		add_action( 'login_form_lug_demo', array( $this, 'handle_quick_login' ) );
+		add_action( 'init', array( $this, 'maybe_seed_after_activation' ), 20 );
+	}
+
+	public function maybe_seed_after_activation() {
+		if ( ! current_user_can( 'manage_options' ) || LUG_DEMO_VERSION === get_option( self::OPTION_SEEDED_VERSION, '' ) ) {
+			return;
+		}
+
+		$report = array( 'action' => 'automatic_seed', 'completed' => current_time( 'mysql' ), 'adapters' => array(), 'errors' => array() );
+		foreach ( (array) apply_filters( 'lug_demo_seed_adapters', array() ) as $key => $adapter ) {
+			if ( isset( $adapter['run'] ) && is_callable( $adapter['run'] ) ) {
+				try {
+					$result = call_user_func( $adapter['run'], self::BATCH_ID );
+					if ( is_wp_error( $result ) ) $report['errors'][ $key ] = $result->get_error_message();
+					else $report['adapters'][ $key ] = isset( $adapter['label'] ) ? $adapter['label'] : $key;
+				} catch ( Throwable $error ) {
+					$report['errors'][ $key ] = $error->getMessage();
+				}
+			}
+		}
+		update_option( self::OPTION_BATCH, self::BATCH_ID, false );
+		update_option( self::OPTION_REPORT, $report, false );
+		update_option( self::OPTION_SEEDED_VERSION, LUG_DEMO_VERSION, false );
 	}
 
 	public function register_core_adapter( $adapters ) {
@@ -266,6 +290,10 @@ final class LUG_Demo {
 	public function seed_accounts( $batch_id ) {
 		foreach ( $this->account_fixtures() as $account ) {
 			$user = get_user_by( 'login', $account['login'] );
+			if ( $user && self::BATCH_ID !== get_user_meta( $user->ID, self::USER_META_BATCH, true ) ) {
+				// Do not overwrite or later delete a real site user on a login collision.
+				continue;
+			}
 			$user_id = $user ? (int) $user->ID : 0;
 
 			$data = array(
