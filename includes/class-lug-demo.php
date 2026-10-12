@@ -829,6 +829,8 @@ final class LUG_Demo {
 		$items = array(
 			'welcome-to-the-demo-lug' => __( 'Home', 'lug-demo' ),
 			'getting-started'         => __( 'Getting Started', 'lug-demo' ),
+			'plugin-tour'             => __( 'Plugin Tour', 'lug-demo' ),
+			'build-along-on-your-phone' => __( 'Build Along on Your Phone', 'lug-demo' ),
 			'about-this-demo'         => __( 'About the Demo', 'lug-demo' ),
 			'community-guidelines'    => __( 'Guidelines', 'lug-demo' ),
 		);
