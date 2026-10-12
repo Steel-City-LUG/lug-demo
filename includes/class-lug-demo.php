@@ -69,7 +69,8 @@ final class LUG_Demo {
 	}
 
 	public function maybe_seed_after_activation() {
-		if ( ! current_user_can( 'manage_options' ) || LUG_DEMO_VERSION === get_option( self::OPTION_SEEDED_VERSION, '' ) ) {
+		$events_ready = ! empty( get_option( self::OPTION_EVENTS, array() ) );
+		if ( ! current_user_can( 'manage_options' ) || ( LUG_DEMO_VERSION === get_option( self::OPTION_SEEDED_VERSION, '' ) && $events_ready ) ) {
 			return;
 		}
 
@@ -290,6 +291,9 @@ final class LUG_Demo {
 	}
 
 	public function seed_accounts( $batch_id ) {
+		// Rebuild starts from the exact current fixture set, removing accounts
+		// from older demo versions (including retired personas).
+		$this->reset_accounts( $batch_id );
 		foreach ( $this->account_fixtures() as $account ) {
 			$user = get_user_by( 'login', $account['login'] );
 			if ( $user && self::BATCH_ID !== get_user_meta( $user->ID, self::USER_META_BATCH, true ) ) {
@@ -428,9 +432,9 @@ final class LUG_Demo {
 		$this->reset_officer_assignments( $batch_id );
 		$assignments = array(
 			'President'  => 'demo1',
-			'Secretary'  => 'builder',
-			'Ambassador' => 'volunteer',
-			'Treasurer'  => 'family',
+			'Secretary'  => 'demo',
+			'Ambassador' => 'demo1',
+			'Treasurer'  => 'demo-super',
 		);
 		$previous = array();
 
@@ -621,7 +625,7 @@ final class LUG_Demo {
 		$fixtures  = require LUG_DEMO_DIR . 'fixtures/shifts.php';
 		$shift_ids = array();
 		$signup_users = array();
-		foreach ( array( 'builder', 'family', 'volunteer', 'newmember' ) as $login ) {
+		foreach ( array( 'demo', 'demo1' ) as $login ) {
 			$user = get_user_by( 'login', $login );
 			if ( $user ) {
 				$signup_users[] = (int) $user->ID;
@@ -799,7 +803,7 @@ final class LUG_Demo {
 		$fixtures  = require LUG_DEMO_DIR . 'fixtures/activity.php';
 		$activity  = array();
 		$users     = array();
-		foreach ( array( 'demo', 'demo1', 'builder', 'family', 'volunteer', 'newmember' ) as $login ) {
+		foreach ( array( 'demo', 'demo1' ) as $login ) {
 			$user = get_user_by( 'login', $login );
 			if ( $user ) {
 				$users[] = (int) $user->ID;
@@ -936,6 +940,9 @@ final class LUG_Demo {
 		$output = '<div class="lug-demo-account-directory"><h2>' . esc_html__( 'Try a demo account', 'lug-demo' ) . '</h2><p>' . esc_html__( 'Use any of these fictional accounts to explore the site from a different perspective. You can always return to this page and try another one.', 'lug-demo' ) . '</p><div class="lug-demo-accounts">';
 
 		foreach ( $this->account_fixtures() as $account ) {
+			if ( ! empty( $account['internal'] ) ) {
+				continue;
+			}
 			$user = get_user_by( 'login', $account['login'] );
 			if ( ! $user || self::BATCH_ID !== get_user_meta( $user->ID, self::USER_META_BATCH, true ) ) {
 				continue;

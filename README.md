@@ -10,7 +10,7 @@ This repository is intentionally separate from `lug-platform`. It should not be 
 - First activation/version update automatically seeds the demo and makes the welcome page the site front page for the administrator who completes the activation flow.
 - A welcoming account directory with one-click demo login links.
 - A sandbox for all demo accounts: WordPress dashboard, settings, user administration, plugin/theme installation, updates, and site configuration are blocked. Only explicitly allowlisted LUG plugin screens and `lug_` plugin actions remain available.
-- Batch-owned, idempotent demo accounts for members, organizers, builders, families, volunteers, and new visitors.
+- Three public demo identities: `demo` (member), `demo1` (organizer/event owner), and `demo-super` (inventory/user-editor manager). The internal `system-messages` account is not shown as a persona to try.
 - Existing non-demo users are never overwritten or deleted if their login collides with a fixture account.
 - A dedicated `demo-super` account for trying lug-core inventory management and its member editor. It is still sandboxed: WordPress settings, plugin/theme/core management, and unrelated admin screens remain blocked.
 - A `system-messages` account configured as lug-core's default sender for welcome messages and member notifications.

@@ -103,8 +103,8 @@ return array(
 		'content' => 'Explore announcements, private welcome messages, Discord connections, and the activity stream.',
 		'topics'  => array(
 			array(
-				'title'   => 'Try it: follow the new-member experience',
-				'content' => 'Use the new member account, read the welcome information, post an activity update, and reply to a forum topic. Then switch to the organizer account to see the community from another perspective.',
+				'title'   => 'Try it: follow the member welcome experience',
+				'content' => 'Use the demo member account, read the welcome information, post an activity update, and reply to a forum topic. Then switch to the organizer account to see the community from another perspective.',
 				'replies' => array(
 					array( 'content' => 'Try writing a welcome message or announcement as though you were inviting someone to their first meetup.' ),
 				),

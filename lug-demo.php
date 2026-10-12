@@ -2,7 +2,7 @@
 /**
  * Plugin Name: LUG Demo
  * Description: Repeatable demo environment for lugtools.steelcitylug.com.
- * Version: 0.1.3
+ * Version: 0.1.4
  * Author: Steel City LUG
  * License: GPL-2.0-or-later
  * Text Domain: lug-demo
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'LUG_DEMO_VERSION', '0.1.3' );
+define( 'LUG_DEMO_VERSION', '0.1.4' );
 define( 'LUG_DEMO_FILE', __FILE__ );
 define( 'LUG_DEMO_DIR', plugin_dir_path( __FILE__ ) );
 
