@@ -88,6 +88,7 @@ return array(
 			'title'   => 'Draw a Custom Icon for Your Item',
 			'summary' => 'Create a readable overhead symbol for your LEGO MOC with the My Inventory icon editor. Draw shapes and lines, adjust stroke and fill, position the label, save and reopen the drawing, then check the custom icon on a display plan.',
 			'videos'  => array(
+				'Andrew' => 'bwbJwGqEZwI',
 			),
 		),
 		array(
@@ -95,6 +96,7 @@ return array(
 			'title'   => 'Layers, Selection and Object Order',
 			'summary' => 'Make a LEGO display plan easier to read: inspect overlapping selections, change object order, reorder layers, hide and restore information, lock a layer, and move annotations to compatible layers.',
 			'videos'  => array(
+				'Andrew' => 'sgOU61NDfgk',
 			),
 		),
 		array(
