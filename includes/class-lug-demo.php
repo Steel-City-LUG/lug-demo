@@ -1010,6 +1010,7 @@ final class LUG_Demo {
 			'plugin-tour'             => __( 'Plugin Tour', 'lug-demo' ),
 			'active-tools'            => __( 'All Active Tools', 'lug-demo' ),
 			'build-along-on-your-phone' => __( 'Build Along on Your Phone', 'lug-demo' ),
+			'layout-designer-training' => __( 'Training Videos', 'lug-demo' ),
 			'about-this-demo'         => __( 'About the Demo', 'lug-demo' ),
 			'community-guidelines'    => __( 'Guidelines', 'lug-demo' ),
 		);

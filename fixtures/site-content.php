@@ -29,7 +29,13 @@ return array(
 		'slug'    => 'active-tools',
 		'title'   => 'All active tools',
 		'excerpt' => 'Direct links to the active plugin surfaces on this demo site.',
-		'content' => '<h2>Explore the active plugin pages</h2><p>These links are the quickest way to visit each public tool. Some tools also appear inside events or member profiles.</p><ul><li><a href="/events/">LUG Core events and shifts</a></li><li><a href="/inventory/">LUG Core inventory</a></li><li><a href="/ispy/">I-Spy public challenges</a></li><li><a href="/build-along-on-your-phone/">Brick by Numbers phone walkthrough</a></li><li><a href="/my-badges/">AFOL badges</a></li><li><a href="/layout/">Layout designer</a></li><li><a href="/forums/">Community forums</a></li><li><a href="/members/">Member directory</a></li><li><a href="/plugin-tour/">Complete plugin tour</a></li></ul><p>Use the current event as the main showcase: it connects event management, I-Spy, QR sharing, and mobile build-along workflows.</p>',
+		'content' => '<h2>Explore the active plugin pages</h2><p>These links are the quickest way to visit each public tool. Some tools also appear inside events or member profiles.</p><ul><li><a href="/events/">LUG Core events and shifts</a></li><li><a href="/inventory/">LUG Core inventory</a></li><li><a href="/ispy/">I-Spy public challenges</a></li><li><a href="/build-along-on-your-phone/">Brick by Numbers phone walkthrough</a></li><li><a href="/my-badges/">AFOL badges</a></li><li><a href="/layout/">Layout designer</a> (<a href="/layout-designer-training/">training videos</a>)</li><li><a href="/forums/">Community forums</a></li><li><a href="/members/">Member directory</a></li><li><a href="/plugin-tour/">Complete plugin tour</a></li></ul><p>Use the current event as the main showcase: it connects event management, I-Spy, QR sharing, and mobile build-along workflows.</p>',
+	),
+	array(
+		'slug'    => 'layout-designer-training',
+		'title'   => 'Layout Designer training videos',
+		'excerpt' => 'Short narrated videos that show how to plan a LEGO display with the Layout Designer.',
+		'content' => '<p>Fourteen short videos, three to six minutes each, walk through planning a LEGO display: tables and baseplates, MOCs and track, notes for the setup crew, printing and exporting, your own inventory, editing permissions, sharing with another club and working together. Pick the narrator voice you like best; every voice covers the same lessons.</p>[lug_demo_training]',
 	),
 	array(
 		'slug'    => 'about-this-demo',
