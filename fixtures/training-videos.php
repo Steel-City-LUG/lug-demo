@@ -15,7 +15,7 @@ return array(
 			'title'   => 'Create a LEGO Display Layout',
 			'summary' => 'Plan a LEGO display for your next event with the Steel City LUG Layout Designer. This video builds a small display from scratch: create a layout, turn on editing, place tables, baseplates and MOCs, lay and connect track, add equipment, label and measure with annotations, use layers, then print, export and share the plan.',
 			'videos'  => array(
-				'Andrew' => 'haDxvTo1ydI',
+				'Andrew' => 'IRad086-Ddw',
 				'Emma' => 'akCGAKKCacQ',
 				'Ava' => 'SxLHg_OpVoI',
 				'Brian' => 'G20zJ1AV45k',
@@ -26,7 +26,7 @@ return array(
 			'title'   => 'Plan Track and Connect It',
 			'summary' => 'Plan the train track for a LEGO display with the Steel City LUG Layout Designer: find parts in the track palette, snap straights and curves together, set exact angles, place track freely, link a finished run so it moves as one, and count the track the club needs to bring.',
 			'videos'  => array(
-				'Andrew' => 'IUYog7MzdwE',
+				'Andrew' => 'WhPTPuQ1dt0',
 				'Emma' => 'X70g1K_HQCY',
 				'Ava' => 'Vnz5oZMjEBY',
 				'Brian' => 'AUKW-kVg5xE',
@@ -49,6 +49,9 @@ return array(
 			'summary' => 'Plan a LEGO display in MILS with the Steel City LUG Layout Designer: studs and 32x32 baseplates, MILS 4x4, Half and MEGA tables that snap edge to edge, baseplates on the stud grid, MOCs sized in studs, measuring in baseplates, and counting tables, legs, plates and MOCs in the legend.',
 			'videos'  => array(
 				'Andrew' => '6IxntIX91Rg',
+				'Emma' => 'WcgwRWzOB8Y',
+				'Ava' => 'z5VJs7nJQgw',
+				'Brian' => '3A16_fRKQD4',
 			),
 		),
 		array(
@@ -57,6 +60,9 @@ return array(
 			'summary' => 'Add notes for the setup crew with the Steel City LUG Layout Designer: text labels with font and colors, highlights, ellipses, lines that show measurements in feet, studs or baseplates, arrows, and star or crosshair markers, then edit, hide or lock the Annotations layer.',
 			'videos'  => array(
 				'Andrew' => 'T0T6nEFhLIs',
+				'Emma' => 'PXHPQ3ftS1Q',
+				'Ava' => 'TLEuba_FITI',
+				'Brian' => 'Y-P0cWMoz_k',
 			),
 		),
 		array(
@@ -65,6 +71,9 @@ return array(
 			'summary' => 'Turn a LEGO display plan into a packing list and setup sheets with the Steel City LUG Layout Designer: the legend that counts tables, legs, equipment, baseplates and MOCs as you plan, the printable view with legend, details, scale bar, layers, paper and orientation, a tables-only setup sheet, PNG pictures, and CSV and Excel setup workbooks.',
 			'videos'  => array(
 				'Andrew' => 'TXWzOoH89tU',
+				'Emma' => 'XTTZDei6YG4',
+				'Ava' => 'JvVkAlegyCw',
+				'Brian' => 'WfMNvxeqePQ',
 			),
 		),
 		array(
@@ -73,6 +82,9 @@ return array(
 			'summary' => 'Edit a LEGO display plan with confidence in the Steel City LUG Layout Designer: select one or several objects, move and nudge them, rotate, duplicate, copy and paste, use the right-click menu, delete and undo or redo, see how automatic saving works, and switch to View only so nothing changes by accident.',
 			'videos'  => array(
 				'Andrew' => 'oIprgjyG48o',
+				'Emma' => 'gqJK3VJm6VQ',
+				'Ava' => '3dP__Djzh_M',
+				'Brian' => '7NJI0ROI0_Q',
 			),
 		),
 		array(
@@ -81,6 +93,9 @@ return array(
 			'summary' => 'Add your own LEGO MOCs, MILS/baseplates and tables to My Inventory. Set a name, quantity, footprint and units, enable Usable in Layout Designer, save the item, and find it under the Members source when planning a display.',
 			'videos'  => array(
 				'Andrew' => 'bd514yhq6pI',
+				'Emma' => '3DflSEiaSIk',
+				'Ava' => 'poAoSv99mjA',
+				'Brian' => 'UVur4qWmMRk',
 			),
 		),
 		array(
@@ -89,6 +104,9 @@ return array(
 			'summary' => 'Create a readable overhead symbol for your LEGO MOC with the My Inventory icon editor. Draw shapes and lines, adjust stroke and fill, position the label, save and reopen the drawing, then check the custom icon on a display plan.',
 			'videos'  => array(
 				'Andrew' => 'bwbJwGqEZwI',
+				'Emma' => 'zK6rZ1jkIfY',
+				'Ava' => 'FuJEUUu4Dlo',
+				'Brian' => 'DFvG13pGTiM',
 			),
 		),
 		array(
@@ -97,6 +115,9 @@ return array(
 			'summary' => 'Make a LEGO display plan easier to read: inspect overlapping selections, change object order, reorder layers, hide and restore information, lock a layer, and move annotations to compatible layers.',
 			'videos'  => array(
 				'Andrew' => 'sgOU61NDfgk',
+				'Emma' => 'pHyFtDiZHqg',
+				'Ava' => '2gfFe2BrLIk',
+				'Brian' => 'HMP1F6wRidk',
 			),
 		),
 		array(
@@ -104,6 +125,10 @@ return array(
 			'title'   => 'Plan Together in Real Time',
 			'summary' => 'Plan a LEGO display with another person: give a specific helper editing access, check separate sessions, understand Here now versus Live presence, and watch a saved change arrive through the site\'s configured update transport. This local demonstration uses periodic polling, not instant WebSocket updates.',
 			'videos'  => array(
+				'Andrew' => '36MsjQdleB0',
+				'Emma' => 'YUYqcsUByDQ',
+				'Ava' => 'AlRfr3Ez0bs',
+				'Brian' => 'mY-wYSQxjdQ',
 			),
 		),
 		array(
@@ -111,6 +136,10 @@ return array(
 			'title'   => 'Control Editing and Public Viewing',
 			'summary' => 'Choose who can edit your LEGO display plan, use a specific-person allowlist, verify a helper\'s access, and test anonymous view-only sharing. Review the warning that member names on inventory remain visible, and keep public viewing separate from cross-club sharing.',
 			'videos'  => array(
+				'Andrew' => 'hPzFmuDZilk',
+				'Emma' => 'mHEO1jASyX0',
+				'Ava' => 'wwvUtQfXfL0',
+				'Brian' => 'AnPw_IkeS6M',
 			),
 		),
 		array(
@@ -129,6 +158,10 @@ return array(
 			'title'   => 'The Layout Designer on Your Phone',
 			'summary' => 'Review and edit a LEGO display plan on a phone: touch controls, Layers & key, visibility and locks, More settings, placing a practice table, List and Actions, and checking saved changes. Captured in a real mobile-sized touch browser context.',
 			'videos'  => array(
+				'Andrew' => 'z4gokdvUEAo',
+				'Emma' => '8GCptdndbGI',
+				'Ava' => 'KPEd6SiHm5g',
+				'Brian' => 'AwneROkV_6Q',
 			),
 		),
 	),
