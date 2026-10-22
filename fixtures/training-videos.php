@@ -13,6 +13,7 @@ return array(
 		),
 		'layout-designer' => array(
 			'name' => 'LUG Layout Designer',
+			'description' => 'Fourteen short videos, three to six minutes each, walk through planning a LEGO display: tables and baseplates, MOCs and track, notes for the setup crew, printing and exporting, your own inventory, editing permissions, sharing with another club and working together. Pick the narrator voice you like best; every voice covers the same lessons.',
 			'playlists' => array(
 				'Andrew' => 'PLdg11rcEeH-s',
 				'Emma' => 'PLXxZJbXiD6vk',
