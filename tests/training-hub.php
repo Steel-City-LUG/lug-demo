@@ -22,10 +22,21 @@ if ( false === strpos( $fallback, 'LUG Layout Designer' ) || false === strpos( $
 	exit( "tool whitelist fallback failed\n" );
 }
 
+// LUG Core has no published episodes yet: it stays out of the picker and a
+// direct ?tool=lug-core falls back to a tool that has videos.
 $_GET = array( 'tool' => 'lug-core' );
-$coming_soon = $renderer->render();
-if ( false === strpos( $coming_soon, 'Coming soon.' ) || false !== strpos( $coming_soon, 'Narrator:' ) ) {
-	exit( "single-voice picker visibility failed\n" );
+$hidden = $renderer->render();
+if ( false !== strpos( $hidden, '>LUG Core<' ) || false !== strpos( $hidden, 'Coming soon.' ) || false === strpos( $hidden, 'Start here' ) ) {
+	exit( "tool without videos was shown\n" );
+}
+
+// The legacy page is dropped from page lists only while /training/ is published.
+$legacy  = new WP_Post( (object) array( 'ID' => -1, 'post_name' => 'layout-designer-training' ) );
+$other   = new WP_Post( (object) array( 'ID' => -2, 'post_name' => 'plugin-tour' ) );
+$listed  = $renderer->hide_legacy_page( array( $legacy, $other ) );
+$expect  = $exists->invoke( $renderer ) ? array( 'plugin-tour' ) : array( 'layout-designer-training', 'plugin-tour' );
+if ( wp_list_pluck( $listed, 'post_name' ) !== $expect ) {
+	exit( "legacy page list filter failed\n" );
 }
 
 $_GET = array( 'tool' => 'layout-designer' );

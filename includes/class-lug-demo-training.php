@@ -13,6 +13,42 @@ final class LUG_Demo_Training {
 	public function hooks() {
 		add_shortcode( 'lug_demo_training', array( $this, 'render' ) );
 		add_action( 'template_redirect', array( $this, 'redirect_old' ) );
+		add_filter( 'get_pages', array( $this, 'hide_legacy_page' ) );
+	}
+
+	/**
+	 * Keep the old /layout-designer-training/ page (it redirects) out of page
+	 * lists such as the header's page list, once /training/ exists.
+	 *
+	 * @param WP_Post[] $pages Pages from get_pages().
+	 * @return WP_Post[]
+	 */
+	public function hide_legacy_page( $pages ) {
+		if ( is_admin() || ! is_array( $pages ) || ! $this->training_page_exists() ) {
+			return $pages;
+		}
+
+		return array_values(
+			array_filter(
+				$pages,
+				static function ( $page ) {
+					return ! ( $page instanceof WP_Post && 'layout-designer-training' === $page->post_name );
+				}
+			)
+		);
+	}
+
+	/**
+	 * Tools that have at least one published episode; the others stay off the
+	 * page until their first video is public.
+	 */
+	private function tools_with_videos( $tools ) {
+		return array_filter(
+			$tools,
+			static function ( $tool ) {
+				return ! empty( $tool['episodes'] );
+			}
+		);
 	}
 
 	private function data() {
@@ -71,7 +107,7 @@ final class LUG_Demo_Training {
 
 	public function render() {
 		$data   = $this->data();
-		$tools  = (array) $data['tools'];
+		$tools  = $this->tools_with_videos( (array) $data['tools'] );
 		$tool_id = $this->selected_tool( $tools );
 		$tool   = isset( $tools[ $tool_id ] ) ? (array) $tools[ $tool_id ] : array();
 		$voices = (array) ( $tool['playlists'] ?? array() );
@@ -121,7 +157,13 @@ final class LUG_Demo_Training {
 				$list_items[] = array( '@type' => 'ListItem', 'position' => absint( $episode['number'] ), 'name' => $episode['title'], 'url' => 'https://www.youtube.com/watch?v=' . $video_id );
 			}
 		}
-		$output .= '</ol></section><section class="lug-demo-training-next"><h2>' . esc_html__( 'Try it yourself', 'lug-demo' ) . '</h2><p>' . esc_html__( 'Log in with a demo account and open the Layout Designer to follow along. Nothing you change here is permanent.', 'lug-demo' ) . '</p><p><a href="' . esc_url( home_url( '/layout/' ) ) . '">' . esc_html__( 'Open the Layout Designer', 'lug-demo' ) . '</a> · <a href="' . esc_url( $playlist_url ) . '">' . esc_html( sprintf( /* translators: %s: narrator name */ __( 'Full playlist (%s)', 'lug-demo' ), $voice ) ) . '</a></p></section>';
+		$output .= '</ol></section>';
+		// The follow-along link is specific to the Layout Designer.
+		if ( 'layout-designer' === $tool_id ) {
+			$output .= '<section class="lug-demo-training-next"><h2>' . esc_html__( 'Try it yourself', 'lug-demo' ) . '</h2><p>' . esc_html__( 'Log in with a demo account and open the Layout Designer to follow along. Nothing you change here is permanent.', 'lug-demo' ) . '</p><p><a href="' . esc_url( home_url( '/layout/' ) ) . '">' . esc_html__( 'Open the Layout Designer', 'lug-demo' ) . '</a> · <a href="' . esc_url( $playlist_url ) . '">' . esc_html( sprintf( /* translators: %s: narrator name */ __( 'Full playlist (%s)', 'lug-demo' ), $voice ) ) . '</a></p></section>';
+		} elseif ( $playlist_url ) {
+			$output .= '<p><a href="' . esc_url( $playlist_url ) . '">' . esc_html__( 'Full playlist', 'lug-demo' ) . '</a></p>';
+		}
 		$output .= '<script type="application/ld+json">' . wp_json_encode( array( '@context' => 'https://schema.org', '@type' => 'ItemList', 'name' => $tool['name'] . ' training videos', 'itemListElement' => $list_items ) ) . '</script></div>';
 
 		return $output;
