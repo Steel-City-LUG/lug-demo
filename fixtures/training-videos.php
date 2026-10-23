@@ -6,9 +6,25 @@ return array(
 	'tools' => array(
 		'lug-core' => array(
 			'name' => 'LUG Core',
+			'description' => 'Fourteen short videos covering the everyday LUG Core workflows: events, shifts, inventory, I-Spy games and show-day coordination.',
 			'playlists' => array(
+				'Playlist' => 'PLNm3UQSb5SzE',
 			),
 			'episodes' => array(
+				array( 'number' => 1, 'title' => 'Find an Event and Sign Up for a Shift', 'summary' => 'Find an upcoming event in LUG Core and sign up for a shift.', 'videos' => array( 'Playlist' => 'fn_MZxEb3Js' ) ),
+				array( 'number' => 2, 'title' => 'Keep Track of Your Shifts Calendar and Notifications', 'summary' => 'Keep track of shifts with the calendar and notifications in LUG Core.', 'videos' => array( 'Playlist' => 'T6JSLSo8220' ) ),
+				array( 'number' => 3, 'title' => 'Browse the Club Inventory and Find Where Things Are', 'summary' => 'Browse club inventory and find the equipment you need.', 'videos' => array( 'Playlist' => 'BB5oVZymy20' ) ),
+				array( 'number' => 4, 'title' => 'Borrow Club Equipment for an Event', 'summary' => 'Borrow club equipment and keep event inventory coordinated.', 'videos' => array( 'Playlist' => 'y1ZcNcABgY4' ) ),
+				array( 'number' => 5, 'title' => 'Return What You Borrowed and Accept a Transfer', 'summary' => 'Return borrowed equipment and accept an inventory transfer.', 'videos' => array( 'Playlist' => 'iVAY-i1Qx-M' ) ),
+				array( 'number' => 6, 'title' => 'Add Your MOCs, Baseplates and Tables to My Inventory', 'summary' => 'Add personal display items to My Inventory for event planning.', 'videos' => array( 'Playlist' => 'dFwwO8Z9JcQ' ) ),
+				array( 'number' => 7, 'title' => 'Earn and Redeem Credits', 'summary' => 'See how LUG Core credits are earned and redeemed.', 'videos' => array( 'Playlist' => 'dWVsWy4wx_k' ) ),
+				array( 'number' => 8, 'title' => 'Play I Spy at a Show', 'summary' => 'Use I-Spy to participate in a show-wide community challenge.', 'videos' => array( 'Playlist' => 'wJVS1qTYbMI' ) ),
+				array( 'number' => 9, 'title' => 'Create and Edit a Club Event', 'summary' => 'Create and maintain club events in LUG Core.', 'videos' => array( 'Playlist' => 'jxRciZLs4gg' ) ),
+				array( 'number' => 10, 'title' => 'Build Shifts for a Multi Day Show', 'summary' => 'Organize volunteer coverage across a multi-day show.', 'videos' => array( 'Playlist' => 'uGL3lIEvjRk' ) ),
+				array( 'number' => 11, 'title' => 'Set Up an I-Spy Game for a Show', 'summary' => 'Set up an I-Spy game for visitors and members at a show.', 'videos' => array( 'Playlist' => 'RXPQb7Jg13g' ) ),
+				array( 'number' => 12, 'title' => 'Fulfill Checkout Requests', 'summary' => 'Review and fulfill checkout requests for club equipment.', 'videos' => array( 'Playlist' => '4QrA0RZOfHU' ) ),
+				array( 'number' => 13, 'title' => 'Manage Items and Storage Locations', 'summary' => 'Manage inventory items and the locations where they are stored.', 'videos' => array( 'Playlist' => 'sQm2W2bZeaU' ) ),
+				array( 'number' => 14, 'title' => 'Set Up LUG Core and Who Can Do What', 'summary' => 'Configure LUG Core and understand role-based permissions.', 'videos' => array( 'Playlist' => '16Wvlcw6g2E' ) ),
 			),
 		),
 		'layout-designer' => array(

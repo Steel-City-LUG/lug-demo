@@ -22,12 +22,11 @@ if ( false === strpos( $fallback, 'LUG Layout Designer' ) || false === strpos( $
 	exit( "tool whitelist fallback failed\n" );
 }
 
-// LUG Core has no published episodes yet: it stays out of the picker and a
-// direct ?tool=lug-core falls back to a tool that has videos.
+// LUG Core is now available as a single-playlist training tool.
 $_GET = array( 'tool' => 'lug-core' );
-$hidden = $renderer->render();
-if ( false !== strpos( $hidden, '>LUG Core<' ) || false !== strpos( $hidden, 'Coming soon.' ) || false === strpos( $hidden, 'Start here' ) ) {
-	exit( "tool without videos was shown\n" );
+$core = $renderer->render();
+if ( false === strpos( $core, '>LUG Core<' ) || false === strpos( $core, 'Start here' ) || false === strpos( $core, 'fn_MZxEb3Js' ) || false === strpos( $core, 'Set Up LUG Core and Who Can Do What' ) || false !== strpos( $core, 'Coming soon.' ) ) {
+	exit( "LUG Core training playlist failed\n" );
 }
 
 // The legacy page is dropped from page lists only while /training/ is published.
