@@ -40,8 +40,14 @@ if ( wp_list_pluck( $listed, 'post_name' ) !== $expect ) {
 
 $_GET = array( 'tool' => 'layout-designer' );
 $layout = $renderer->render();
-if ( false === strpos( $layout, 'Narrator:' ) || false === strpos( $layout, 'Fourteen short videos' ) ) {
+if ( false === strpos( $layout, 'Narrator:' ) || 14 !== substr_count( $layout, '<li value=' ) ) {
 	exit( "layout voice picker or description failed\n" );
+}
+
+$_GET = array( 'tool' => 'brick-by-numbers' );
+$mosaic = $renderer->render();
+if ( false === strpos( $mosaic, 'PLfKKOOpgnNNc' ) || false === strpos( $mosaic, '_CUzmaBW7M0' ) || 8 !== substr_count( $mosaic, '<li value=' ) || false !== strpos( $mosaic, 'Narrator:' ) ) {
+	exit( "mosaic training playlist failed\n" );
 }
 
 echo "training hub checks passed\n";

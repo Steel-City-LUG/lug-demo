@@ -63,7 +63,7 @@ return array(
 					'title' => 'Run a Mosaic Session',
 					'summary' => 'Open and operate a Mosaic Session from the organizer experience.',
 					'videos' => array(
-						'Andrew' => 'orw5g2BwKMo'
+						'Andrew' => 'WmaXfixW9HI'
 					),
 				),
 				array(
