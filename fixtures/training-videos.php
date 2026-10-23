@@ -4,32 +4,200 @@
 return array(
 	'channel' => 'https://www.youtube.com/channel/UC1nYnRWAKNmRGX0O-3elUGg',
 	'tools' => array(
-		'lug-core' => array(
-			'name' => 'LUG Core',
-			'description' => 'Fourteen short videos covering the everyday LUG Core workflows: events, shifts, inventory, I-Spy games and show-day coordination.',
+		'brick-by-numbers' => array(
+			'name' => 'Brick to Numbers',
 			'playlists' => array(
-				'Playlist' => 'PLNm3UQSb5SzE',
+				'Andrew' => 'PLfKKOOpgnNNc'
 			),
 			'episodes' => array(
-				array( 'number' => 1, 'title' => 'Find an Event and Sign Up for a Shift', 'summary' => 'Find an upcoming event in LUG Core and sign up for a shift.', 'videos' => array( 'Playlist' => 'fn_MZxEb3Js' ) ),
-				array( 'number' => 2, 'title' => 'Keep Track of Your Shifts Calendar and Notifications', 'summary' => 'Keep track of shifts with the calendar and notifications in LUG Core.', 'videos' => array( 'Playlist' => 'T6JSLSo8220' ) ),
-				array( 'number' => 3, 'title' => 'Browse the Club Inventory and Find Where Things Are', 'summary' => 'Browse club inventory and find the equipment you need.', 'videos' => array( 'Playlist' => 'BB5oVZymy20' ) ),
-				array( 'number' => 4, 'title' => 'Borrow Club Equipment for an Event', 'summary' => 'Borrow club equipment and keep event inventory coordinated.', 'videos' => array( 'Playlist' => 'y1ZcNcABgY4' ) ),
-				array( 'number' => 5, 'title' => 'Return What You Borrowed and Accept a Transfer', 'summary' => 'Return borrowed equipment and accept an inventory transfer.', 'videos' => array( 'Playlist' => 'iVAY-i1Qx-M' ) ),
-				array( 'number' => 6, 'title' => 'Add Your MOCs, Baseplates and Tables to My Inventory', 'summary' => 'Add personal display items to My Inventory for event planning.', 'videos' => array( 'Playlist' => 'dFwwO8Z9JcQ' ) ),
-				array( 'number' => 7, 'title' => 'Earn and Redeem Credits', 'summary' => 'See how LUG Core credits are earned and redeemed.', 'videos' => array( 'Playlist' => 'dWVsWy4wx_k' ) ),
-				array( 'number' => 8, 'title' => 'Play I Spy at a Show', 'summary' => 'Use I-Spy to participate in a show-wide community challenge.', 'videos' => array( 'Playlist' => 'wJVS1qTYbMI' ) ),
-				array( 'number' => 9, 'title' => 'Create and Edit a Club Event', 'summary' => 'Create and maintain club events in LUG Core.', 'videos' => array( 'Playlist' => 'jxRciZLs4gg' ) ),
-				array( 'number' => 10, 'title' => 'Build Shifts for a Multi Day Show', 'summary' => 'Organize volunteer coverage across a multi-day show.', 'videos' => array( 'Playlist' => 'uGL3lIEvjRk' ) ),
-				array( 'number' => 11, 'title' => 'Set Up an I-Spy Game for a Show', 'summary' => 'Set up an I-Spy game for visitors and members at a show.', 'videos' => array( 'Playlist' => 'RXPQb7Jg13g' ) ),
-				array( 'number' => 12, 'title' => 'Fulfill Checkout Requests', 'summary' => 'Review and fulfill checkout requests for club equipment.', 'videos' => array( 'Playlist' => '4QrA0RZOfHU' ) ),
-				array( 'number' => 13, 'title' => 'Manage Items and Storage Locations', 'summary' => 'Manage inventory items and the locations where they are stored.', 'videos' => array( 'Playlist' => 'sQm2W2bZeaU' ) ),
-				array( 'number' => 14, 'title' => 'Set Up LUG Core and Who Can Do What', 'summary' => 'Configure LUG Core and understand role-based permissions.', 'videos' => array( 'Playlist' => '16Wvlcw6g2E' ) ),
+				array(
+					'number' => 1,
+					'title' => 'From Photo to Mosaic Build Plan',
+					'summary' => 'Understand the Brick to Numbers workflow from source image to printable contribution sheets.',
+					'videos' => array(
+						'Andrew' => '_CUzmaBW7M0'
+					),
+				),
+				array(
+					'number' => 2,
+					'title' => 'Prepare an Image for a Mosaic',
+					'summary' => 'Crop and size a source image for a wide, tall, or large mosaic.',
+					'videos' => array(
+						'Andrew' => 'wzJduTsFQHQ'
+					),
+				),
+				array(
+					'number' => 3,
+					'title' => 'Generate a Mosaic and Choose Colors',
+					'summary' => 'Choose a palette and style, generate the mosaic, and read the project color legend.',
+					'videos' => array(
+						'Andrew' => 'krmZkP6xoTw'
+					),
+				),
+				array(
+					'number' => 4,
+					'title' => 'Correct a Generated Mosaic',
+					'summary' => 'Use the implemented touch-up and manual editing controls to correct the generated result.',
+					'videos' => array(
+						'Andrew' => 'qCNU1hSnrAU'
+					),
+				),
+				array(
+					'number' => 5,
+					'title' => 'Save, Print, and Export a Mosaic Build Kit',
+					'summary' => 'Save a mosaic project and use the available print, download, and package outputs.',
+					'videos' => array(
+						'Andrew' => 'S4nDlLOZxoM'
+					),
+				),
+				array(
+					'number' => 6,
+					'title' => 'Reopen and Share a Saved Mosaic',
+					'summary' => 'Reopen a saved mosaic and use the implemented project sharing workflow.',
+					'videos' => array(
+						'Andrew' => '4E6LQjJfwok'
+					),
+				),
+				array(
+					'number' => 7,
+					'title' => 'Run a Mosaic Session',
+					'summary' => 'Open and operate a Mosaic Session from the organizer experience.',
+					'videos' => array(
+						'Andrew' => 'orw5g2BwKMo'
+					),
+				),
+				array(
+					'number' => 8,
+					'title' => 'Join and Complete a Mosaic Contribution',
+					'summary' => 'Join a public Mosaic Session, claim a contribution, and follow its build instructions.',
+					'videos' => array(
+						'Andrew' => '5KGdgnhZz_Q'
+					),
+				),
+			),
+		),
+		'lug-core' => array(
+			'name' => 'LUG Core',
+			'playlists' => array(
+				'Andrew' => 'PLNm3UQSb5SzE'
+			),
+			'episodes' => array(
+				array(
+					'number' => 1,
+					'title' => 'Find an Event and Sign Up for a Shift',
+					'summary' => 'Help your LEGO User Group put on a show: find a club event in LUG Core, open its shifts, read times and credits, sign up or withdraw, use General Sign-ups for things like bringing a display, and jump to the shift page from the event box pinned to the event\'s forum topic.',
+					'videos' => array(
+						'Andrew' => 'fn_MZxEb3Js'
+					),
+				),
+				array(
+					'number' => 2,
+					'title' => 'Keep Track of Your Shifts: Calendar and Notifications',
+					'summary' => 'Keep track of the shifts you signed up for at your LEGO User Group\'s shows: see who you are working with, add one shift or all of them to Google Calendar, Outlook or Apple Calendar, choose which shift messages LUG Core sends you, and find those messages on your profile.',
+					'videos' => array(
+						'Andrew' => 'T6JSLSo8220'
+					),
+				),
+				array(
+					'number' => 3,
+					'title' => 'Browse the Club Inventory and Find Where Things Are',
+					'summary' => 'Find your LEGO User Group\'s equipment in LUG Core: browse by category, search and sort, see what is checked out and who has it, open an item\'s details and history, check where it lives and where it is now, and see what the club and its members could bring together.',
+					'videos' => array(
+						'Andrew' => 'BB5oVZymy20'
+					),
+				),
+				array(
+					'number' => 4,
+					'title' => 'Borrow Club Equipment for an Event',
+					'summary' => 'Request your LEGO User Group\'s tables, stanchions and other equipment for a show in LUG Core: pick the event so overlapping bookings are flagged, add items to your cart, leave pickup notes, submit one request, and follow it in My Checkouts until a manager approves it.',
+					'videos' => array(
+						'Andrew' => 'y1ZcNcABgY4'
+					),
+				),
+				array(
+					'number' => 5,
+					'title' => 'Return What You Borrowed and Accept a Transfer',
+					'summary' => 'Bring your LEGO User Group\'s equipment back in LUG Core: record a full or partial return from My Checkouts, say where you left it, approve or deny a transfer when another member takes over an item, and see every step in the item\'s history.',
+					'videos' => array(
+						'Andrew' => 'iVAY-i1Qx-M'
+					),
+				),
+				array(
+					'number' => 6,
+					'title' => 'Add Your MOCs, Baseplates and Tables to My Inventory',
+					'summary' => 'List what you could bring to your LEGO User Group\'s shows in LUG Core: add MOCs with their size and photos, add MILS baseplates and tables, copy one of the club\'s pieces you also own so it counts in LUG + All Members, and share your public gallery.',
+					'videos' => array(
+						'Andrew' => 'dFwwO8Z9JcQ'
+					),
+				),
+				array(
+					'number' => 7,
+					'title' => 'Earn and Redeem Credits',
+					'summary' => 'Earn credits by helping at your LEGO User Group\'s events and spend them in LUG Core: read your credits history and one-time bonuses, check LUGBULK eligibility, redeem credits for loose brick or one of the club\'s sets, and follow the request until a manager approves it.',
+					'videos' => array(
+						'Andrew' => 'dWVsWy4wx_k'
+					),
+				),
+				array(
+					'number' => 8,
+					'title' => 'Play I-Spy at a Show',
+					'summary' => 'Play your LEGO User Group\'s I-Spy game at a show: open it on a phone, tick off what you find in the display, use photo hints when you are stuck, see the members-only hints by logging in, and finish the checklist.',
+					'videos' => array(
+						'Andrew' => 'wJVS1qTYbMI'
+					),
+				),
+				array(
+					'number' => 9,
+					'title' => 'Create and Edit a Club Event',
+					'summary' => 'Run your LEGO User Group\'s events in LUG Core: add an event with its dates and description, open it for sign-ups, bind its forum topic so a pinned event box stays up to date, add event managers, then close it after the show to award credits and export the LAN Event Report.',
+					'videos' => array(
+						'Andrew' => 'jxRciZLs4gg'
+					),
+				),
+				array(
+					'number' => 10,
+					'title' => 'Build Shifts for a Multi-Day Show',
+					'summary' => 'Build the volunteer schedule for a multi-day LEGO show in LUG Core: describe a shift once, duplicate it for the afternoon, pick the show\'s days on the calendar, review and create them all, add a setup night and general sign-ups, and lock a shift when its crew is set.',
+					'videos' => array(
+						'Andrew' => 'uGL3lIEvjRk'
+					),
+				),
+				array(
+					'number' => 11,
+					'title' => 'Set Up an I-Spy Game for a Show',
+					'summary' => 'Create an I-Spy game for your LEGO User Group\'s next show in LUG Core: link it to the event, add the things to find with hint photos, lock hints for members, set the order and finish message, turn it on and check it as a visitor.',
+					'videos' => array(
+						'Andrew' => 'RXPQb7Jg13g'
+					),
+				),
+				array(
+					'number' => 12,
+					'title' => 'Fulfill Checkout Requests',
+					'summary' => 'Work through your LEGO User Group\'s equipment requests in LUG Core: see what is waiting on the Manager Dashboard, approve all or part of a request and mark it out, request a transfer when another member has the item, deny with a reason, and check Out Now and the item history.',
+					'videos' => array(
+						'Andrew' => '4QrA0RZOfHU'
+					),
+				),
+				array(
+					'number' => 13,
+					'title' => 'Manage Items and Storage Locations',
+					'summary' => 'Keep your LEGO User Group\'s inventory up to date in LUG Core: add equipment with its quantity and storage place, use the item page\'s manager tools, add and deactivate storage locations, and import many items at once from a CSV spreadsheet.',
+					'videos' => array(
+						'Andrew' => 'sQm2W2bZeaU'
+					),
+				),
+				array(
+					'number' => 14,
+					'title' => 'Set Up LUG Core and Who Can Do What',
+					'summary' => 'Set up LUG Core for your LEGO User Group: choose which event details are shown and required, add your own event questions for the LAN report, configure inventory categories and standard layout items, name your credits, set bonus credits and LUGBULK eligibility, and decide who are owners and inventory managers.',
+					'videos' => array(
+						'Andrew' => '16Wvlcw6g2E'
+					),
+				),
 			),
 		),
 		'layout-designer' => array(
 			'name' => 'LUG Layout Designer',
-			'description' => 'Fourteen short videos, three to six minutes each, walk through planning a LEGO display: tables and baseplates, MOCs and track, notes for the setup crew, printing and exporting, your own inventory, editing permissions, sharing with another club and working together. Pick the narrator voice you like best; every voice covers the same lessons.',
 			'playlists' => array(
 				'Andrew' => 'PLdg11rcEeH-s',
 				'Emma' => 'PLXxZJbXiD6vk',
