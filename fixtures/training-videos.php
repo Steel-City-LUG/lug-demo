@@ -361,5 +361,157 @@ return array(
 				),
 			),
 		),
+		'bricks-cubed' => array(
+			'name' => 'Bricks Cubed',
+			'playlists' => array(
+				'Andrew' => 'PLTyCzqWIZ9YQ'
+			),
+			'episodes' => array(
+				array(
+					'number' => 1,
+					'title' => 'Create Your First Shadow Sculpture',
+					'summary' => 'Load an example, inspect its shadows, and review its build.',
+					'videos' => array(
+						'Andrew' => 'XLhdazDGJpk'
+					),
+				),
+				array(
+					'number' => 2,
+					'title' => 'Edit Faces with Text, Stencils, and Shapes',
+					'summary' => 'Change face sources, add a stencil, and regenerate.',
+					'videos' => array(
+						'Andrew' => '6LAAregNvUs'
+					),
+				),
+				array(
+					'number' => 3,
+					'title' => 'Make Words on a Base',
+					'summary' => 'Use two-view carving, letter pairs, and a supporting base.',
+					'videos' => array(
+						'Andrew' => 'y3TAJ3z3F5c'
+					),
+				),
+				array(
+					'number' => 4,
+					'title' => 'Create a Spinning Shadow Sculpture',
+					'summary' => 'Use magic-angle examples, Wall and Table displays, and shadow stops.',
+					'videos' => array(
+						'Andrew' => 'UXrSxX71VjQ'
+					),
+				),
+				array(
+					'number' => 5,
+					'title' => 'Inspect Parts and Build Warnings',
+					'summary' => 'Review connectivity, weakness, allowed parts, and the complete part layout.',
+					'videos' => array(
+						'Andrew' => 'wuyXO-gSFpI'
+					),
+				),
+				array(
+					'number' => 6,
+					'title' => 'Follow Steps and Export Your Sculpture',
+					'summary' => 'Step through the build and use Studio, wanted-list, and printable outputs.',
+					'videos' => array(
+						'Andrew' => 'vEaArhyGpvw'
+					),
+				),
+				array(
+					'number' => 7,
+					'title' => 'Save, Reopen, and Share Sculptures',
+					'summary' => 'Save your design, reopen it, make a copy, and control public links.',
+					'videos' => array(
+						'Andrew' => 'djp7Zn50arA'
+					),
+				),
+				array(
+					'number' => 8,
+					'title' => 'Configure Designer Access',
+					'summary' => 'Review access choices and the optional full-screen address as an administrator.',
+					'videos' => array(
+						'Andrew' => 'KJX3nyG5uow'
+					),
+				),
+			),
+		),
+		'geobrick' => array(
+			'name' => 'GEoBrick',
+			'playlists' => array(
+				'Andrew' => 'PLCK4znBtO6F8'
+			),
+			'episodes' => array(
+				array(
+					'number' => 1,
+					'title' => 'Design a Geometric Model from Start to Finish',
+					'summary' => 'Choose a sphere, inspect its layers, and export the model.',
+					'videos' => array(
+						'Andrew' => 's9D6IxwgZOI'
+					),
+				),
+				array(
+					'number' => 2,
+					'title' => 'Size a Model and Make a Hollow Shell',
+					'summary' => 'Adjust physical dimensions, proportions, walls, and target size.',
+					'videos' => array(
+						'Andrew' => 'e-BcA6E2U7c'
+					),
+				),
+				array(
+					'number' => 3,
+					'title' => 'Turn a Footprint into a 3D Model',
+					'summary' => 'Combine footprint shapes with straight, dome, taper, and ridge profiles.',
+					'videos' => array(
+						'Andrew' => 'k5dGghUchmA'
+					),
+				),
+				array(
+					'number' => 4,
+					'title' => 'Make Text Signs and Revolved Shapes',
+					'summary' => 'Create a text footprint and shape a vase with a revolve profile.',
+					'videos' => array(
+						'Andrew' => 'J1K_rxaVzBk'
+					),
+				),
+				array(
+					'number' => 5,
+					'title' => 'Choose Layers, Colours, and Patterns',
+					'summary' => 'Compare brick, plate, mixed, and cubic layers, then apply colours.',
+					'videos' => array(
+						'Andrew' => '0SGTMKyTUBs'
+					),
+				),
+				array(
+					'number' => 6,
+					'title' => 'Inspect Fit and Floating Bricks',
+					'summary' => 'Use fit settings, ideal overlays, and support warnings without treating them as physical validation.',
+					'videos' => array(
+						'Andrew' => 'a8HJWiJEfMY'
+					),
+				),
+				array(
+					'number' => 7,
+					'title' => 'Read Layer Plans and Export to Studio',
+					'summary' => 'Step through layer plans, review parts, export LDraw, and print.',
+					'videos' => array(
+						'Andrew' => '0s3kxveQCHE'
+					),
+				),
+				array(
+					'number' => 8,
+					'title' => 'Save, Reopen, and Share Designs',
+					'summary' => 'Save private designs, reopen and copy them, and use visibility-aware links and QR codes.',
+					'videos' => array(
+						'Andrew' => 'd9zq_D6__N8'
+					),
+				),
+				array(
+					'number' => 9,
+					'title' => 'Review Access and the Public Gallery',
+					'summary' => 'Understand the designer route, member publishing, and gallery access settings.',
+					'videos' => array(
+						'Andrew' => 'I_TkFfR1xOM'
+					),
+				),
+			),
+		),
 	),
 );
