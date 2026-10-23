@@ -190,3 +190,11 @@ footer.wp-block-template-part {
 .lug-demo-training-soon {
 	color: #5b6660;
 }
+
+.lug-demo-feature-snapshots { margin: 2rem 0 3rem; }
+.lug-demo-feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+.lug-demo-feature-grid figure { margin: 0; overflow: hidden; border: 1px solid rgba(0,0,0,.12); border-radius: 12px; background: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.07); }
+.lug-demo-feature-grid img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.lug-demo-feature-grid figcaption { display: grid; gap: .35rem; padding: .85rem 1rem 1rem; }
+.lug-demo-feature-grid figcaption span { font-size: .92em; opacity: .78; }
+.lug-demo-feature-note { margin: .9rem 0 0; font-size: .9em; opacity: .72; }

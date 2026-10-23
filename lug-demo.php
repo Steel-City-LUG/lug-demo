@@ -17,6 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'LUG_DEMO_VERSION', '0.1.8' );
 define( 'LUG_DEMO_FILE', __FILE__ );
 define( 'LUG_DEMO_DIR', plugin_dir_path( __FILE__ ) );
+define( 'LUG_DEMO_URL', plugin_dir_url( __FILE__ ) );
 
 require_once LUG_DEMO_DIR . 'includes/class-lug-demo.php';
 require_once LUG_DEMO_DIR . 'includes/class-lug-demo-admin.php';

@@ -12,8 +12,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class LUG_Demo_Training {
 	public function hooks() {
 		add_shortcode( 'lug_demo_training', array( $this, 'render' ) );
+		add_shortcode( 'lug_demo_feature_snapshots', array( $this, 'feature_snapshots' ) );
 		add_action( 'template_redirect', array( $this, 'redirect_old' ) );
 		add_filter( 'get_pages', array( $this, 'hide_legacy_page' ) );
+	}
+
+	public function feature_snapshots() {
+		$snapshots = array(
+			array( 'slug' => 'lug-core-events-shifts', 'title' => 'Events and shifts', 'text' => 'Plan a show, publish shifts, and let members sign up.' ),
+			array( 'slug' => 'lug-core-inventory', 'title' => 'Club inventory', 'text' => 'Find equipment, track checkouts, and manage storage.' ),
+			array( 'slug' => 'layout-designer', 'title' => 'Layout Designer', 'text' => 'Arrange tables, track, baseplates, and MOCs for a display.' ),
+			array( 'slug' => 'brick-by-numbers', 'title' => 'Brick by Numbers', 'text' => 'Turn an image into a guided mosaic build.' ),
+		);
+		$output = '<section class="lug-demo-feature-snapshots" aria-labelledby="lug-demo-feature-snapshots-title"><h2 id="lug-demo-feature-snapshots-title">See the tools in action</h2><div class="lug-demo-feature-grid">';
+		foreach ( $snapshots as $snapshot ) {
+			$src = LUG_DEMO_URL . 'assets/training/' . $snapshot['slug'] . '.jpg';
+			$output .= '<figure><img loading="lazy" src="' . esc_url( $src ) . '" alt="' . esc_attr( $snapshot['title'] ) . ' feature screenshot"><figcaption><strong>' . esc_html( $snapshot['title'] ) . '</strong><span>' . esc_html( $snapshot['text'] ) . '</span></figcaption></figure>';
+		}
+		return $output . '</div><p class="lug-demo-feature-note">These snapshots come from the matching training episodes below.</p></section>';
 	}
 
 	/**

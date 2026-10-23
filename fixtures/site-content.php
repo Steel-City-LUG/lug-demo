@@ -35,7 +35,7 @@ return array(
 		'slug'    => 'training',
 		'title'   => 'Training Videos',
 		'excerpt' => 'Short narrated videos that show how to use the Steel City LUG tools.',
-		'content' => '<p>Short narrated videos that show how to use the Steel City LUG tools. Pick a tool, then an episode.</p>[lug_demo_training]',
+		'content' => '<p>Short narrated videos that show how to use the Steel City LUG tools. Pick a tool, then an episode.</p>[lug_demo_feature_snapshots][lug_demo_training]',
 	),
 	array(
 		'slug'    => 'layout-designer-training',
