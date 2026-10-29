@@ -194,6 +194,14 @@ return array(
 						'Andrew' => '16Wvlcw6g2E'
 					),
 				),
+				array(
+					'number' => 15,
+					'title' => 'Push an Event to Google Calendar',
+					'summary' => 'Put your LEGO User Group\'s events on the club\'s Google Calendar from LUG Core: check the one-time setup reads Ready to sync, see exactly what is shared, push an event, see the synced status on its forum topic, push again when the dates change, and remove it from the calendar.',
+					'videos' => array(
+						'Andrew' => 'APV4rcsq9dA'
+					),
+				),
 			),
 		),
 		'layout-designer' => array(
