@@ -1,0 +1,48 @@
+{
+  "tool": "lug-newsletter",
+  "pluginVersion": "0.18.1",
+  "shots": [
+    {
+      "id": "overview",
+      "file": "overview.png",
+      "title": "Newsletter workspace",
+      "alt": "Newsletter overview with one draft and links to composition, audience and reports",
+      "caption": "Newsletter workspace — Local demonstration; no email sent."
+    },
+    {
+      "id": "editor",
+      "file": "editor.png",
+      "title": "Compose stories and preview the email",
+      "alt": "Newsletter draft with organized stories, event dates, links and an email preview",
+      "caption": "Compose stories and preview the email — Local demonstration; no email sent."
+    },
+    {
+      "id": "audience",
+      "file": "audience.png",
+      "title": "Manage consent and future mailings",
+      "alt": "Newsletter subscription statuses and future-mailing controls using example contacts",
+      "caption": "Manage consent and future mailings — Local demonstration; no email sent."
+    },
+    {
+      "id": "reports",
+      "file": "reports.png",
+      "title": "Delivery and engagement reporting",
+      "alt": "Campaign report library with labeled local engagement measurements",
+      "caption": "Delivery and engagement reporting — Local demonstration; no email sent."
+    },
+    {
+      "id": "mail-settings",
+      "file": "mail-settings.png",
+      "title": "Choose WordPress mail or dedicated SMTP",
+      "alt": "Mail-service settings with example SMTP hostname, encryption and authentication controls",
+      "caption": "Choose WordPress mail or dedicated SMTP — Local demonstration; no email sent."
+    },
+    {
+      "id": "setup-guide",
+      "file": "setup-guide.png",
+      "title": "Installation guidance included",
+      "alt": "Bundled installation guide describing configuration, permission and delivery requirements",
+      "caption": "Installation guidance included — Local demonstration; no email sent."
+    }
+  ]
+}

@@ -72,6 +72,13 @@ final class LUG_Demo {
 
 	public function maybe_seed_after_activation() {
 		$events_ready = ! empty( get_option( self::OPTION_EVENTS, array() ) );
+		// This marketing-only upgrade must not reseed existing demo accounts, events or content.
+		if ( $events_ready && '0.1.10' === LUG_DEMO_VERSION ) {
+			if ( LUG_DEMO_VERSION !== get_option( self::OPTION_SEEDED_VERSION ) ) {
+				update_option( self::OPTION_SEEDED_VERSION, LUG_DEMO_VERSION, false );
+			}
+			return;
+		}
 		if ( ! current_user_can( 'manage_options' ) || ( LUG_DEMO_VERSION === get_option( self::OPTION_SEEDED_VERSION, '' ) && $events_ready ) ) {
 			return;
 		}

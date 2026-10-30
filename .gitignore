@@ -2,3 +2,5 @@
 Thumbs.db
 vendor/
 node_modules/
+__pycache__/
+deploy/

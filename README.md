@@ -31,6 +31,12 @@ This repository is intentionally separate from `lug-platform`. It should not be 
 
 The plugin is intentionally private to `lugtools.steelcitylug.com`. Its fixtures are designed to make that site feel like an established local LUG where visitors can explore the complete toolset. It is not intended for distribution to other LUG sites.
 
+## Public demo email policy
+
+On the configured `lugtools.steelcitylug.com` site, LUG Demo blocks all WordPress email with a failed result and a second PHPMailer transport guard. Newsletter capabilities and every Newsletter REST route are denied for all users, including administrators; its queue worker and new queue schedules are disabled. Newsletter is presented through screenshots and training only. The guard uses the configured site URL, not the request Host header, and does not apply to other LUG installations. Keep LUG Demo active on the public demo site.
+
+Run `php tests/mail-safety.php` for isolated boundary checks.
+
 ## Seed and reset contract
 
 Use **LUG Demo → Seed / rebuild demo** after enabling or updating the installed plugins. The seed operation clears the previous batch-owned records before recreating them. Reset removes only records tracked by this plugin, including demo users, pages, navigation, events, forums, topics, replies, and BuddyPress activity.

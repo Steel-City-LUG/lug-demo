@@ -1,10 +1,14 @@
 name: Deploy LUG Demo plugin
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-lug-demo
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -27,11 +31,26 @@ jobs:
           test -n "$SFTP_PASS" || { echo "Missing SFTP_PASS secret" >&2; exit 1; }
           test -n "$SFTP_PATH" || { echo "Missing sftp_path repository variable" >&2; exit 1; }
 
-      - name: Normalize remote plugin path
+      - name: Lint and test safety boundaries
+        run: |
+          find . -name '*.php' -print0 | xargs -0 -n1 php -l
+          php tests/mail-safety.php
+          python3 tests/ftp-root.py
+
+      - name: Verify existing plugin destination
         id: path
         env:
+          SFTP_USER: ${{ secrets.ftp_user }}
+          SFTP_PASS: ${{ secrets.ftp_pass }}
           SFTP_PATH: ${{ vars.sftp_path }}
-        run: echo "remote=${SFTP_PATH%/}/lug-demo" >> "$GITHUB_OUTPUT"
+        run: python3 tools/check-ftp-root.py
+
+      - name: Prepare plugin package
+        run: |
+          mkdir -p deploy/plugin
+          git rev-parse --short HEAD > deploy/plugin/BUILD_SHA
+          cp lug-demo.php README.md deploy/plugin/
+          cp -R assets includes fixtures deploy/plugin/
 
       - name: Deploy plugin directory
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -40,6 +59,6 @@ jobs:
           username: ${{ secrets.ftp_user }}
           password: ${{ secrets.sftp_pass }}
           protocol: ftps
-          local-dir: ./
-          server-dir: ${{ steps.path.outputs.remote }}/
+          local-dir: deploy/plugin/
+          server-dir: ${{ steps.path.outputs.remote }}
           dangerous-clean-slate: false
