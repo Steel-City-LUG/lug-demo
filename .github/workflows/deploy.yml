@@ -41,7 +41,7 @@ jobs:
         id: path
         env:
           SFTP_USER: ${{ secrets.ftp_user }}
-          SFTP_PASS: ${{ secrets.ftp_pass }}
+          SFTP_PASS: ${{ secrets.sftp_pass }}
           SFTP_PATH: ${{ vars.sftp_path }}
         run: python3 tools/check-ftp-root.py
 
