@@ -521,5 +521,93 @@ return array(
 				),
 			),
 		),
+		'lug-newsletter' => array(
+			'name' => 'LUG Newsletter',
+			'playlists' => array(
+				'Andrew' => 'PLDIH-N27eNB0'
+			),
+			'episodes' => array(
+				array(
+					'number' => 1,
+					'title' => 'Find Your Way Around LUG Newsletter',
+					'summary' => 'Understand the workspace, drafts, audience, reports and who can manage delivery.',
+					'videos' => array(
+						'Andrew' => 'LkZ6Fq3eh3g'
+					),
+				),
+				array(
+					'number' => 2,
+					'title' => 'Set Your Newsletter Sender and Branding',
+					'summary' => 'Set a recognizable sender, your LUG identity, footer and useful links.',
+					'videos' => array(
+						'Andrew' => '06qJFgwIfKM'
+					),
+				),
+				array(
+					'number' => 3,
+					'title' => 'Choose WordPress Mail or Dedicated SMTP',
+					'summary' => 'Set the server, encryption and authentication for your chosen mail service.',
+					'videos' => array(
+						'Andrew' => '8wWRVjZG15Y'
+					),
+				),
+				array(
+					'number' => 4,
+					'title' => 'Authenticate Your Newsletter Domain',
+					'summary' => 'Understand provider signing, optional plugin DKIM and real inbox checks.',
+					'videos' => array(
+						'Andrew' => 'AFHhdEZnzIE'
+					),
+				),
+				array(
+					'number' => 5,
+					'title' => 'Configure Newsletter Pacing and the Worker',
+					'summary' => 'Set safe delivery limits and verify the scheduler.',
+					'videos' => array(
+						'Andrew' => 'J8UrUU1k3OQ'
+					),
+				),
+				array(
+					'number' => 6,
+					'title' => 'Compose Stories, Dates and Useful Links',
+					'summary' => 'Create a clear edition with an opening note and organized stories.',
+					'videos' => array(
+						'Andrew' => 'nMdrWSMGVzU'
+					),
+				),
+				array(
+					'number' => 7,
+					'title' => 'Add Photos and Check the Email Preview',
+					'summary' => 'Review photo details, captions, destinations and desktop or mobile layouts.',
+					'videos' => array(
+						'Andrew' => 'IuP9A-SLibI'
+					),
+				),
+				array(
+					'number' => 8,
+					'title' => 'Manage Subscriber Consent and History',
+					'summary' => 'Understand statuses, inspect history and safely control future newsletter delivery.',
+					'videos' => array(
+						'Andrew' => 'pznFEXNFjfQ'
+					),
+				),
+				array(
+					'number' => 9,
+					'title' => 'Test, Review and Schedule a Newsletter',
+					'summary' => 'Understand final review, explicit test recipients and gradual scheduled delivery.',
+					'videos' => array(
+						'Andrew' => 'r3bSjzrdcVQ'
+					),
+				),
+				array(
+					'number' => 10,
+					'title' => 'Read Newsletter Delivery and Engagement Reports',
+					'summary' => 'Separate acceptance from inbox delivery and interpret opens, clicks and history.',
+					'videos' => array(
+						'Andrew' => '_gViclKUt64'
+					),
+				),
+			),
+		),
 	),
 );

@@ -28,7 +28,7 @@ final class LUG_Demo_Mail_Safety {
 	}
 	public static function deny_newsletter_api( $result, $server, $request ) {
 		if ( preg_match( '#^/lug-newsletter/v[0-9]+(?:/|$)#', $request->get_route() ) ) {
-			return new WP_Error( 'lug_demo_newsletter_disabled', 'Newsletter is available as screenshots and training only on this demo site.', [ 'status' => 403 ] );
+			return new WP_Error( 'lug_demo_newsletter_disabled', 'Newsletter offers read-only samples, screenshots and training on this demo site. Sending and editing are disabled.', [ 'status' => 403 ] );
 		}
 		return $result;
 	}

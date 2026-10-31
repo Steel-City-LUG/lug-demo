@@ -37,6 +37,10 @@ On the configured `lugtools.steelcitylug.com` site, LUG Demo blocks all WordPres
 
 Run `php tests/mail-safety.php` for isolated boundary checks.
 
+### Newsletter training links (0.1.13)
+
+The Newsletter showcase and `/training/?tool=lug-newsletter` share the generated training catalog. The training export includes Newsletter only after the playlist and episode visibility have been verified as public; private uploads and empty playlists stay out of public pages. Updating this catalog preserves existing demo records and the email/Newsletter editing blocks.
+
 ### Newsletter sample data (0.1.12)
 
 After Newsletter is installed and active, LUG Tools seeds three private example drafts, five fictional contacts at reserved `example.org` addresses, and a clearly labeled simulated report. Every sample delivery row is already closed; the seed never calls mail, queues delivery or schedules a send. Existing contacts and their opt-outs are preserved. Repeated requests reuse the completed seed. Seed/reset owns only marked posts and source-tagged contacts; it does not reset other tools or change mail credentials. `/newsletter/` offers read-only draft details and subscription examples without send/edit controls.
