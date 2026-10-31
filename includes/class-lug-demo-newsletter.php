@@ -19,7 +19,9 @@ final class LUG_Demo_Newsletter {
         $data['screenshots']=(array)json_decode(file_get_contents(LUG_DEMO_DIR.'fixtures/newsletter-screenshots.json'),true);
         $html='<article class="lug-demo-newsletter"><header><p class="lug-demo-newsletter-kicker">COMMUNICATION FOR YOUR LUG</p><h2>A newsletter workspace your LUG owns</h2><p>'.esc_html($data['short_description']).'</p></header><p>'.esc_html($data['long_description']).'</p><h2>What you can do</h2><ul>';
         foreach($data['features'] as $feature)$html.='<li>'.esc_html($feature).'</li>';
-        $html.='</ul><p><strong>Screenshots and training only.</strong> Newsletter is disabled on this demo site. This site does not send email.</p><h2>Inside the workspace</h2><div class="lug-demo-newsletter-shots">';
+        $html.='</ul><p><strong>Read-only samples, screenshots and training.</strong> Newsletter sending and editing are disabled on this demo site. This site does not send email.</p>';
+        $html.=$this->samples();
+        $html.='<h2>Inside the workspace</h2><div class="lug-demo-newsletter-shots">';
         foreach($data['screenshots'] as $shot){
             $url=LUG_DEMO_URL.'assets/training/newsletter/'.$shot['file'];
             $html.='<figure><a href="'.esc_url($url).'"><img src="'.esc_url($url).'" alt="'.esc_attr($shot['alt']).'" loading="lazy" width="1920" height="1080"></a><figcaption>'.esc_html($shot['caption']).'</figcaption></figure>';
@@ -34,6 +36,24 @@ final class LUG_Demo_Newsletter {
             $html.='<p>The narrated training series is being prepared. Published episodes will appear here after review.</p>';
         }
         $html.='<h2>Installation and availability</h2><p>Install through your connected LUG Platform site when Newsletter is available to your LUG. The plugin includes its own setup and operations guides. Check the product catalog for release availability.</p><p><a href="https://steelcitylug.com/lug-platform/tools/lug-newsletter/">Newsletter in the LUG Platform catalog</a></p></article>';
+        return $html;
+    }
+
+    private function samples() {
+        $state=get_option(LUG_Demo_Newsletter_Seed::OPTION,[]);
+        if (empty($state['complete']) || !class_exists('LUG_Newsletter_Workspace')) return '';
+        $html='<section class="lug-demo-newsletter-samples"><h2>Sample Newsletter workspace</h2><p>Explore fictional drafts, subscription examples and a simulated report. These samples cannot send or schedule email.</p><h3>Example drafts</h3>';
+        foreach($state['drafts'] as $id) {
+            if(get_post_meta($id,LUG_Demo_Newsletter_Seed::META,true)!==LUG_Demo_Newsletter_Seed::SOURCE)continue;
+            $draft=LUG_Newsletter_Workspace::get((int)$id);if(is_wp_error($draft))continue;
+            $html.='<details><summary>'.esc_html($draft['title']).' · Draft</summary><p><strong>Subject:</strong> '.esc_html($draft['subject']).'</p><p>'.esc_html($draft['intro']).'</p>';
+            foreach($draft['items'] as $item)$html.='<h4>'.esc_html($item['title']).'</h4><p>'.esc_html($item['description']).'</p>';
+            $html.='</details>';
+        }
+        $data=require LUG_DEMO_DIR.'fixtures/newsletter-data.php';
+        $html.='<h3>Fictional contacts</h3><p>All addresses use the reserved example.org domain. These are sample records, not real subscribers.</p><div class="lug-demo-newsletter-table"><table><thead><tr><th>Name</th><th>Email</th><th>Subscription example</th></tr></thead><tbody>';
+        foreach($data['contacts'] as $contact)$html.='<tr><td>'.esc_html($contact['name']).'</td><td>'.esc_html($contact['email']).'</td><td>'.esc_html(ucfirst($contact['status'])).'</td></tr>';
+        $html.='</tbody></table></div><h3>Simulated reporting</h3><p>The sample report contains closed example delivery rows and simulated opens and clicks. No message was sent. There are no queued or scheduled sample deliveries.</p></section>';
         return $html;
     }
 }

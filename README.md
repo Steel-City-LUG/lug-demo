@@ -33,9 +33,15 @@ The plugin is intentionally private to `lugtools.steelcitylug.com`. Its fixtures
 
 ## Public demo email policy
 
-On the configured `lugtools.steelcitylug.com` site, LUG Demo blocks all WordPress email with a failed result and a second PHPMailer transport guard. Newsletter capabilities and every Newsletter REST route are denied for all users, including administrators; its queue worker and new queue schedules are disabled. Newsletter is presented through screenshots and training only. The guard uses the configured site URL, not the request Host header, and does not apply to other LUG installations. Keep LUG Demo active on the public demo site.
+On the configured `lugtools.steelcitylug.com` site, LUG Demo blocks all WordPress email with a failed result and a second PHPMailer transport guard. Newsletter capabilities and every Newsletter REST route are denied for all users, including administrators; its queue worker and new queue schedules are disabled. Newsletter is presented through read-only samples, screenshots and training. The guard uses the configured site URL, not the request Host header, and does not apply to other LUG installations. Keep LUG Demo active on the public demo site.
 
 Run `php tests/mail-safety.php` for isolated boundary checks.
+
+### Newsletter sample data (0.1.12)
+
+After Newsletter is installed and active, LUG Tools seeds three private example drafts, five fictional contacts at reserved `example.org` addresses, and a clearly labeled simulated report. Every sample delivery row is already closed; the seed never calls mail, queues delivery or schedules a send. Existing contacts and their opt-outs are preserved. Repeated requests reuse the completed seed. Seed/reset owns only marked posts and source-tagged contacts; it does not reset other tools or change mail credentials. `/newsletter/` offers read-only draft details and subscription examples without send/edit controls.
+
+Local integration check: `wp eval-file tests/newsletter-seed-local.php`. It uses temporary Newsletter tables, verifies idempotency, no mail/active jobs and preservation of existing consent, then removes its own records. It does not activate LUG Demo locally or touch the original Newsletter tables.
 
 ## Seed and reset contract
 
