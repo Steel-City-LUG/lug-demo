@@ -88,3 +88,10 @@ All six training series remain available (64 episodes).
 
 Remove the training page screenshot section, including already-seeded pages.
 The video tool picker and all episodes remain available without reseeding demo data.
+
+## 0.1.16
+
+Retire the mixed build-along walkthrough and Community Guidelines page from demo navigation.
+Their old URLs redirect to Brick to Numbers training and About this demo respectively.
+Correct the All Tools and Plugin tour copy to distinguish I-Spy checklists from mosaic building.
+Existing demo data is not reseeded.

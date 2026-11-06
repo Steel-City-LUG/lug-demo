@@ -63,6 +63,8 @@ final class LUG_Demo {
 		add_action( 'wp_footer', array( $this, 'render_demo_footer' ), 20 );
 		add_filter( 'block_core_navigation_render_inner_blocks', array( $this, 'filter_header_navigation' ) );
 		add_filter( 'the_content', array( $this, 'filter_active_tools_content' ) );
+		add_action( 'template_redirect', array( $this, 'redirect_retired_pages' ) );
+		add_filter( 'get_pages', array( $this, 'hide_retired_pages' ) );
 		add_action( 'admin_init', array( $this, 'enforce_admin_sandbox' ), 1 );
 		add_filter( 'user_has_cap', array( $this, 'restrict_sandbox_capabilities' ), 99, 4 );
 		add_filter( 'lug_inventory_manager_user_ids', array( $this, 'add_demo_inventory_managers' ) );
@@ -75,7 +77,7 @@ final class LUG_Demo {
 	public function maybe_seed_after_activation() {
 		$events_ready = ! empty( get_option( self::OPTION_EVENTS, array() ) );
 		// Presentation-only upgrades must not reseed existing demo accounts, events or content.
-		if ( $events_ready && in_array( LUG_DEMO_VERSION, array( '0.1.13', '0.1.14', '0.1.15' ), true ) ) {
+		if ( $events_ready && in_array( LUG_DEMO_VERSION, array( '0.1.13', '0.1.14', '0.1.15', '0.1.16' ), true ) ) {
 			if ( LUG_DEMO_VERSION !== get_option( self::OPTION_SEEDED_VERSION ) ) {
 				update_option( self::OPTION_SEEDED_VERSION, LUG_DEMO_VERSION, false );
 			}
@@ -171,15 +173,41 @@ final class LUG_Demo {
 
 	/** Also clean already-seeded pages without rebuilding demo data. */
 	public function filter_active_tools_content( $content ) {
-		if ( ! is_page( 'active-tools' ) ) {
+		if ( ! is_page( array( 'active-tools', 'plugin-tour' ) ) ) {
 			return $content;
 		}
 
-		return str_replace(
-			array( '<li><a href="/forums/">Community forums</a></li>', '<li><a href="/members/">Member directory</a></li>' ),
-			'',
-			$content
+		$replacements = array(
+			'<li><a href="/forums/">Community forums</a></li>' => '',
+			'<li><a href="/members/">Member directory</a></li>' => '',
+			'<li><a href="/build-along-on-your-phone/">Brick by Numbers phone walkthrough</a></li>' => '<li><a href="/training/?tool=brick-by-numbers">Brick to Numbers mosaic training</a></li>',
+			'Use the current event as the main showcase: it connects event management, I-Spy, QR sharing, and mobile build-along workflows.' => 'Explore events and the I-Spy checklist with LUG Core. For mosaic building, follow the separate Brick to Numbers training series.',
+			'<strong>Brick by Numbers:</strong> Open a build-along challenge, follow numbered steps, and scan the QR code from a phone.' => '<strong>Brick to Numbers:</strong> Turn an image into a mosaic build plan and run a Mosaic Session where visitors claim and build a contribution. <a href="/training/?tool=brick-by-numbers">Watch the mosaic training</a>.',
+			'Try the build-along instructions from your phone.' => 'Watch the separate Brick to Numbers mosaic training to learn how to join a Mosaic Session and build a contribution.',
 		);
+
+		return strtr( $content, $replacements );
+	}
+
+	/** Retain useful destinations for bookmarks to retired demo pages. */
+	public function redirect_retired_pages() {
+		if ( is_page( 'build-along-on-your-phone' ) ) {
+			wp_safe_redirect( home_url( '/training/?tool=brick-by-numbers' ), 301 );
+			exit;
+		}
+		if ( is_page( 'community-guidelines' ) ) {
+			wp_safe_redirect( home_url( '/about-this-demo/' ), 301 );
+			exit;
+		}
+	}
+
+	public function hide_retired_pages( $pages ) {
+		if ( is_admin() || ! is_array( $pages ) ) {
+			return $pages;
+		}
+		return array_values( array_filter( $pages, static function ( $page ) {
+			return ! in_array( $page->post_name, array( 'build-along-on-your-phone', 'community-guidelines' ), true );
+		} ) );
 	}
 
 	/** Replace automatic navigation lists on the seeded demo; preserve explicit menus. */
@@ -215,7 +243,7 @@ final class LUG_Demo {
 	}
 
 	public function render_demo_footer() {
-		echo '<footer class="lug-demo-footer"><p><strong>' . esc_html__( 'Steel City LUG tools demo', 'lug-demo' ) . '</strong> — ' . esc_html__( 'Explore freely; the site can be reset to its starting point.', 'lug-demo' ) . '</p><nav aria-label="' . esc_attr__( 'Demo links', 'lug-demo' ) . '"><a href="' . esc_url( home_url( '/plugin-tour/' ) ) . '">' . esc_html__( 'Plugin tour', 'lug-demo' ) . '</a><a href="' . esc_url( home_url( '/getting-started/' ) ) . '">' . esc_html__( 'Getting started', 'lug-demo' ) . '</a><a href="' . esc_url( home_url( '/build-along-on-your-phone/' ) ) . '">' . esc_html__( 'Build along on your phone', 'lug-demo' ) . '</a><a href="' . esc_url( home_url( '/about-this-demo/' ) ) . '">' . esc_html__( 'About this demo', 'lug-demo' ) . '</a><a href="' . esc_url( home_url( '/community-guidelines/' ) ) . '">' . esc_html__( 'Community guidelines', 'lug-demo' ) . '</a></nav></footer>';
+		echo '<footer class="lug-demo-footer"><p><strong>' . esc_html__( 'Steel City LUG tools demo', 'lug-demo' ) . '</strong> — ' . esc_html__( 'Explore freely; the site can be reset to its starting point.', 'lug-demo' ) . '</p><nav aria-label="' . esc_attr__( 'Demo links', 'lug-demo' ) . '"><a href="' . esc_url( home_url( '/plugin-tour/' ) ) . '">' . esc_html__( 'Plugin tour', 'lug-demo' ) . '</a><a href="' . esc_url( home_url( '/getting-started/' ) ) . '">' . esc_html__( 'Getting started', 'lug-demo' ) . '</a><a href="' . esc_url( home_url( '/about-this-demo/' ) ) . '">' . esc_html__( 'About this demo', 'lug-demo' ) . '</a></nav></footer>';
 	}
 
 	public function restrict_sandbox_capabilities( $allcaps, $caps, $args, $user ) {
