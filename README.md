@@ -95,3 +95,10 @@ Retire the mixed build-along walkthrough and Community Guidelines page from demo
 Their old URLs redirect to Brick to Numbers training and About this demo respectively.
 Correct the All Tools and Plugin tour copy to distinguish I-Spy checklists from mosaic building.
 Existing demo data is not reseeded.
+
+## 0.1.17
+
+Replace the introductory pages with a task-based, hands-on plugin journey.
+Remove normal-journey reset messaging and retired demo-account prompts.
+Keep account access expectations clear and label the Newsletter showcase read-only.
+Existing demo data is not reseeded.
