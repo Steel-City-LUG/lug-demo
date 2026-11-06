@@ -76,3 +76,10 @@ $adapters['events'] = array(
 ```
 
 Adapters must create only records marked with `steel-city-lug-demo-v1` and must remove only those records during reset.
+
+## 0.1.14
+
+Simplify automatic header navigation to Getting Started, All Tools, and Training Videos.
+Keep background links in the footer and remove Community forums and Member directory
+from All Tools, including already-seeded pages. Existing demo data is not reseeded.
+All six training series remain available (64 episodes).

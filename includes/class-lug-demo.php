@@ -61,6 +61,8 @@ final class LUG_Demo {
 		add_action( 'admin_post_lug_demo_reset', array( $this, 'handle_reset' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
 		add_action( 'wp_footer', array( $this, 'render_demo_footer' ), 20 );
+		add_filter( 'block_core_navigation_render_inner_blocks', array( $this, 'filter_header_navigation' ) );
+		add_filter( 'the_content', array( $this, 'filter_active_tools_content' ) );
 		add_action( 'admin_init', array( $this, 'enforce_admin_sandbox' ), 1 );
 		add_filter( 'user_has_cap', array( $this, 'restrict_sandbox_capabilities' ), 99, 4 );
 		add_filter( 'lug_inventory_manager_user_ids', array( $this, 'add_demo_inventory_managers' ) );
@@ -72,8 +74,8 @@ final class LUG_Demo {
 
 	public function maybe_seed_after_activation() {
 		$events_ready = ! empty( get_option( self::OPTION_EVENTS, array() ) );
-		// This marketing-only upgrade must not reseed existing demo accounts, events or content.
-		if ( $events_ready && '0.1.13' === LUG_DEMO_VERSION ) {
+		// Presentation-only upgrades must not reseed existing demo accounts, events or content.
+		if ( $events_ready && in_array( LUG_DEMO_VERSION, array( '0.1.13', '0.1.14' ), true ) ) {
 			if ( LUG_DEMO_VERSION !== get_option( self::OPTION_SEEDED_VERSION ) ) {
 				update_option( self::OPTION_SEEDED_VERSION, LUG_DEMO_VERSION, false );
 			}
@@ -159,8 +161,61 @@ final class LUG_Demo {
 		);
 	}
 
+	private function primary_navigation() {
+		return array(
+			'getting-started' => __( 'Getting Started', 'lug-demo' ),
+			'active-tools'    => __( 'All Tools', 'lug-demo' ),
+			'training'        => __( 'Training Videos', 'lug-demo' ),
+		);
+	}
+
+	/** Also clean already-seeded pages without rebuilding demo data. */
+	public function filter_active_tools_content( $content ) {
+		if ( ! is_page( 'active-tools' ) ) {
+			return $content;
+		}
+
+		return str_replace(
+			array( '<li><a href="/forums/">Community forums</a></li>', '<li><a href="/members/">Member directory</a></li>' ),
+			'',
+			$content
+		);
+	}
+
+	/** Replace automatic navigation lists on the seeded demo; preserve explicit menus. */
+	public function filter_header_navigation( $blocks ) {
+		if ( ! get_option( self::OPTION_WELCOME_PAGE ) ) {
+			return $blocks;
+		}
+
+		$updated = array();
+		$changed = false;
+		$context = array();
+		foreach ( $blocks as $block ) {
+			$context = $block->context;
+			if ( 'core/page-list' !== $block->name ) {
+				$updated[] = $block->parsed_block;
+				continue;
+			}
+			$changed = true;
+			foreach ( $this->primary_navigation() as $slug => $label ) {
+				$page = get_page_by_path( $slug, OBJECT, 'page' );
+				if ( ! $page || 'publish' !== $page->post_status ) {
+					continue;
+				}
+				$updated[] = array(
+					'blockName' => 'core/navigation-link',
+					'attrs' => array( 'id' => $page->ID, 'kind' => 'post-type', 'type' => 'page', 'label' => $label, 'url' => get_permalink( $page ) ),
+					'innerBlocks' => array(), 'innerHTML' => '', 'innerContent' => array(),
+				);
+			}
+		}
+
+		return $changed && $updated ? new WP_Block_List( $updated, $context ) : $blocks;
+	}
+
 	public function render_demo_footer() {
-		echo '<footer class="lug-demo-footer"><p><strong>' . esc_html__( 'Steel City LUG tools demo', 'lug-demo' ) . '</strong> — ' . esc_html__( 'Explore freely; the site can be reset to its starting point.', 'lug-demo' ) . '</p><nav aria-label="' . esc_attr__( 'Demo links', 'lug-demo' ) . '"><a href="' . esc_url( home_url( '/plugin-tour/' ) ) . '">' . esc_html__( 'Plugin tour', 'lug-demo' ) . '</a><a href="' . esc_url( home_url( '/getting-started/' ) ) . '">' . esc_html__( 'Getting started', 'lug-demo' ) . '</a><a href="' . esc_url( home_url( '/build-along-on-your-phone/' ) ) . '">' . esc_html__( 'Build along on your phone', 'lug-demo' ) . '</a></nav></footer>';
+		echo '<footer class="lug-demo-footer"><p><strong>' . esc_html__( 'Steel City LUG tools demo', 'lug-demo' ) . '</strong> — ' . esc_html__( 'Explore freely; the site can be reset to its starting point.', 'lug-demo' ) . '</p><nav aria-label="' . esc_attr__( 'Demo links', 'lug-demo' ) . '"><a href="' . esc_url( home_url( '/plugin-tour/' ) ) . '">' . esc_html__( 'Plugin tour', 'lug-demo' ) . '</a><a href="' . esc_url( home_url( '/getting-started/' ) ) . '">' . esc_html__( 'Getting started', 'lug-demo' ) . '</a><a href="' . esc_url( home_url( '/build-along-on-your-phone/' ) ) . '">' . esc_html__( 'Build along on your phone', 'lug-demo' ) . '</a><a href="' . esc_url( home_url( '/about-this-demo/' ) ) . '">' . esc_html__( 'About this demo', 'lug-demo' ) . '</a><a href="' . esc_url( home_url( '/community-guidelines/' ) ) . '">' . esc_html__( 'Community guidelines', 'lug-demo' ) . '</a></nav></footer>';
 	}
 
 	public function restrict_sandbox_capabilities( $allcaps, $caps, $args, $user ) {
@@ -1011,16 +1066,7 @@ final class LUG_Demo {
 			return 0;
 		}
 
-		$items = array(
-			'welcome-to-the-demo-lug' => __( 'Home', 'lug-demo' ),
-			'getting-started'         => __( 'Getting Started', 'lug-demo' ),
-			'plugin-tour'             => __( 'Plugin Tour', 'lug-demo' ),
-			'active-tools'            => __( 'All Active Tools', 'lug-demo' ),
-			'build-along-on-your-phone' => __( 'Build Along on Your Phone', 'lug-demo' ),
-			'training'                => __( 'Training Videos', 'lug-demo' ),
-			'about-this-demo'         => __( 'About the Demo', 'lug-demo' ),
-			'community-guidelines'    => __( 'Guidelines', 'lug-demo' ),
-		);
+		$items = $this->primary_navigation();
 
 		foreach ( $items as $slug => $label ) {
 			if ( empty( $page_ids[ $slug ] ) ) {

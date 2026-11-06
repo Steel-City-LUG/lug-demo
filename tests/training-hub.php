@@ -50,4 +50,13 @@ if ( false === strpos( $mosaic, 'PLfKKOOpgnNNc' ) || false === strpos( $mosaic, 
 	exit( "mosaic training playlist failed\n" );
 }
 
-echo "training hub checks passed\n";
+// Every published plugin series must remain reachable with its complete episode list.
+foreach ( array( 'brick-by-numbers' => 8, 'lug-core' => 15, 'layout-designer' => 14, 'bricks-cubed' => 8, 'geobrick' => 9, 'lug-newsletter' => 10 ) as $tool_id => $count ) {
+	$_GET = array( 'tool' => $tool_id );
+	$html = $renderer->render();
+	if ( $count !== substr_count( $html, '<li value=' ) || false === strpos( $html, 'aria-current="true"' ) ) {
+		throw new RuntimeException( 'Incomplete training series: ' . $tool_id );
+	}
+}
+
+echo "training hub checks passed (six series, 64 episodes)\n";
