@@ -83,3 +83,8 @@ Simplify automatic header navigation to Getting Started, All Tools, and Training
 Keep background links in the footer and remove Community forums and Member directory
 from All Tools, including already-seeded pages. Existing demo data is not reseeded.
 All six training series remain available (64 episodes).
+
+## 0.1.15
+
+Remove the training page screenshot section, including already-seeded pages.
+The video tool picker and all episodes remain available without reseeding demo data.
