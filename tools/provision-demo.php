@@ -23,6 +23,18 @@ if ( ! get_option( LUG_Demo::OPTION_EVENTS ) ) {
 $demo->seed_member_profiles( LUG_Demo::BATCH_ID );
 $demo->seed_officer_assignments( LUG_Demo::BATCH_ID );
 
+// BBN's standalone creator is opt-in; a link alone does not register its route.
+$bbn = (array) get_option( 'bbn_settings', array() );
+$bbn['public_experience'] = array_merge( (array) ( $bbn['public_experience'] ?? array() ), array( 'creator_route_enabled' => true, 'creator_route_path' => '/bbn/create/' ) );
+update_option( 'bbn_settings', $bbn );
+if ( class_exists( 'BBN_Events' ) ) { BBN_Events::register_rewrite_rules(); }
+
+// /officers/ is owned by the Officers plugin's native router.
+$old_roster = get_page_by_path( 'officers' );
+if ( $old_roster && LUG_Demo::BATCH_ID === get_post_meta( $old_roster->ID, LUG_Demo::CONTENT_META_BATCH, true ) && ! get_page_by_path( 'officer-roster' ) ) {
+	wp_update_post( array( 'ID' => $old_roster->ID, 'post_name' => 'officer-roster' ) );
+}
+
 $categories = array( 1 => 'Sets', 2 => 'Equipment', 3 => 'Parts', 4 => 'Baseplates', 5 => 'MOCs', 6 => 'Tables' );
 foreach ( $categories as $id => $name ) {
 	if ( ! $wpdb->get_var( $wpdb->prepare( 'SELECT id FROM lug_inventory_categories WHERE id=%d', $id ) ) ) {
@@ -37,7 +49,7 @@ foreach ( array( array( 2, 'Demo display transport cart', 2 ), array( 6, 'Demo f
 
 $pages = array(
 	'rotating-displays' => array( 'Rotating Displays', '<p>Try the member workflow: open the demo display, choose a free future date range, reserve it, then cancel your reservation. All locations are fictional.</p>[lug_displays]' ),
-	'officers' => array( 'Demo officer roster', '<p>Inspect the fictional roster. Appointments, elections and nominations are administrator workflows and are not editable by demo guests.</p>[lug_officers]' ),
+	'officer-roster' => array( 'Demo officer roster', '<p>Inspect the fictional roster. Appointments, elections and nominations are administrator workflows and are not editable by demo guests.</p>[lug_officers]' ),
 	'member-map' => array( 'Demo member ZIP map', '<p>These ZIP clusters come from fictional demo profiles. Explore the map; do not enter your home address.</p>[lug_user_zip_map]' ),
 	'member-notifications' => array( 'Welcome messages and notifications', '<h2>Example welcome message</h2><blockquote><p>Welcome to the demo club! Start by choosing an interest badge, finding an event and exploring the member tools.</p></blockquote><p>A real club can send welcome messages and event updates to members. This public demo does not deliver email. Member notifications are a workflow preview; use fictional information only.</p><p><a href="/my-badges/">Choose an interest badge</a> or <a href="/events/">explore events</a>.</p>' ),
 	'integrations' => array( 'Integration previews', '<h2>Forum to Discord bridge</h2><p>In a real club, an approved forum announcement can notify a configured Discord channel. This demo has no connected webhook and sends nothing to Discord.</p><h2>Discord Connect</h2><p>A member connects their own Discord identity; the club can synchronize membership roles. Real OAuth and role synchronization are disabled here. Do not enter Discord credentials.</p><h2>LUG Platform</h2><p>The connector links an approved club site to its hub. Pairing and cross-site connections require administrator setup and are not available to public guests.</p><p>These are setup previews, not live external integrations.</p>' ),
@@ -64,4 +76,5 @@ if ( ! $location_id ) {
 if ( ! $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $display_table WHERE name=%s", 'Demo library showcase' ) ) ) {
 	if ( false === $wpdb->insert( $display_table, array( 'name' => 'Demo library showcase', 'location' => 'Demo Community Library', 'location_id' => $location_id, 'dimensions' => '48 x 24 x 24 inches', 'description' => 'Try reserving a free date range, then cancel your reservation.', 'width' => 48, 'height' => 24, 'depth' => 24, 'created_by' => $organizer->ID, 'is_active' => 1 ) ) ) { throw new RuntimeException( 'Display sample setup failed.' ); }
 }
+flush_rewrite_rules( false );
 echo wp_json_encode( array( 'created_schema_tables' => $created, 'demo_events' => get_option( LUG_Demo::OPTION_EVENTS ), 'member_demo_pages' => array_keys( $pages ), 'shared_layouts_enabled' => function_exists( 'lug_layout_shared_layouts_enabled' ) && lug_layout_shared_layouts_enabled() ) ) . PHP_EOL;

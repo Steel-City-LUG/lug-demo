@@ -78,7 +78,7 @@ final class LUG_Demo {
 	public function maybe_seed_after_activation() {
 		$events_ready = ! empty( get_option( self::OPTION_EVENTS, array() ) );
 		// Presentation-only upgrades must not reseed existing demo accounts, events or content.
-		if ( $events_ready && in_array( LUG_DEMO_VERSION, array( '0.1.13', '0.1.14', '0.1.15', '0.1.16', '0.1.17', '0.1.18', '0.1.19' ), true ) ) {
+		if ( $events_ready && in_array( LUG_DEMO_VERSION, array( '0.1.13', '0.1.14', '0.1.15', '0.1.16', '0.1.17', '0.1.18', '0.1.19', '0.1.20' ), true ) ) {
 			if ( LUG_DEMO_VERSION !== get_option( self::OPTION_SEEDED_VERSION ) ) {
 				update_option( self::OPTION_SEEDED_VERSION, LUG_DEMO_VERSION, false );
 			}
