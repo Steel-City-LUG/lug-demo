@@ -1,4 +1,4 @@
-# Demo guest access 1.0.2
+# Demo guest access 1.0.3
 
 Install `lug-demo-guest-access.php` directly into the tools site's
 `wp-content/mu-plugins/` directory. It only admits visitors when the configured
@@ -33,3 +33,8 @@ Run `tests/guest-access.php` with the local WordPress PHP configuration to verif
 member capabilities, privilege escalation rejection, expiry and cleanup. HTTP
 checks should also verify POST + nonce, two independent guest identities, valid
 cookie authentication, and rejection of the retired passwordless endpoint.
+
+Server HTTP calls to real clubs, Discord and other external integrations are
+blocked on the demo host. WordPress update services and public training lookups
+remain available. Expired guests release private layouts, display reservations,
+event signups and inventory cart holds; pending checkout requests are cancelled.

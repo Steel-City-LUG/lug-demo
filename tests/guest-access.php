@@ -11,6 +11,9 @@ try {
 	$host = static function () { return 'https://lugtools.steelcitylug.com'; };
 	add_filter( 'pre_option_home', $host );
 	$assert( 0 === get_option( 'lug_layout_collaboration_enabled' ), 'Cross-LUG sharing disabled on demo host' );
+	$assert( is_wp_error( apply_filters( 'pre_http_request', false, array( 'method' => 'POST' ), 'https://discord.com/api/webhooks/demo' ) ), 'External webhook delivery blocked' );
+	$assert( is_wp_error( apply_filters( 'pre_http_request', false, array( 'method' => 'GET' ), 'https://steelcitylug.com/wp-json/' ) ), 'Real club server calls blocked' );
+	$assert( false === apply_filters( 'pre_http_request', false, array( 'method' => 'POST' ), 'https://api.wordpress.org/core/version-check/1.7/' ), 'WordPress security update checks retained' );
 	foreach ( array( time() + 7200, time() - 1 ) as $expires ) {
 		$id = wp_insert_user( array( 'user_login' => 'lug-guest-' . bin2hex( random_bytes( 12 ) ), 'user_pass' => bin2hex( random_bytes( 32 ) ), 'role' => 'subscriber', 'meta_input' => array( LUG_Demo_Guest_Access::META => $expires ) ) );
 		$assert( ! is_wp_error( $id ), 'Guest creation' );
@@ -20,6 +23,7 @@ try {
 	$assert( LUG_Demo_Guest_Access::valid( $guest ), 'Active subscriber accepted' );
 	$assert( user_can( $guest, 'read' ), 'Member read access' );
 	wp_set_current_user( $guest->ID );
+	$assert( ! apply_filters( 'show_admin_bar', true ), 'No misleading admin toolbar for guests' );
 	$join = new WP_REST_Request( 'POST', '/lug-layout/v1/shared/join' );
 	$assert( is_wp_error( LUG_Demo_Guest_Access::personal_layouts( null, array(), $join ) ), 'Shared layout joining denied' );
 	$list = new WP_REST_Request( 'GET', '/lug-layout/v1/layouts' );

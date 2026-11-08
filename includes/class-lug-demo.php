@@ -78,7 +78,7 @@ final class LUG_Demo {
 	public function maybe_seed_after_activation() {
 		$events_ready = ! empty( get_option( self::OPTION_EVENTS, array() ) );
 		// Presentation-only upgrades must not reseed existing demo accounts, events or content.
-		if ( $events_ready && in_array( LUG_DEMO_VERSION, array( '0.1.13', '0.1.14', '0.1.15', '0.1.16', '0.1.17' ), true ) ) {
+		if ( $events_ready && in_array( LUG_DEMO_VERSION, array( '0.1.13', '0.1.14', '0.1.15', '0.1.16', '0.1.17', '0.1.18' ), true ) ) {
 			if ( LUG_DEMO_VERSION !== get_option( self::OPTION_SEEDED_VERSION ) ) {
 				update_option( self::OPTION_SEEDED_VERSION, LUG_DEMO_VERSION, false );
 			}
@@ -174,9 +174,13 @@ final class LUG_Demo {
 
 	/** Refresh the introductory journey without rebuilding stored demo data. */
 	public function render_hands_on_intro( $content ) {
-		$slugs = array( 'welcome-to-the-demo-lug', 'getting-started', 'plugin-tour', 'about-this-demo' );
+		$slugs = array( 'welcome-to-the-demo-lug', 'getting-started', 'plugin-tour', 'active-tools', 'about-this-demo' );
 		if ( ! is_page( $slugs ) || ! is_main_query() || ! in_the_loop() || get_the_ID() !== get_queried_object_id() ) {
 			return $content;
+		}
+		$guide = require LUG_DEMO_DIR . 'fixtures/demo-guide.php';
+		foreach ( $guide as $slug => $html ) {
+			if ( is_page( $slug ) ) { return $html; }
 		}
 		foreach ( (array) require LUG_DEMO_DIR . 'fixtures/site-content.php' as $fixture ) {
 			if ( in_array( $fixture['slug'], $slugs, true ) && is_page( $fixture['slug'] ) ) {

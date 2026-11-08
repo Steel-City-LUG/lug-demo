@@ -2,7 +2,7 @@
 /**
  * Plugin Name: LUG Demo Guest Access
  * Description: Temporary, unprivileged visitor sessions for the tools demo only.
- * Version: 1.0.2
+ * Version: 1.0.3
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
@@ -28,7 +28,8 @@ final class LUG_Demo_Guest_Access {
 	}
 
 	public static function form() {
-		if ( ! self::enabled() || is_user_logged_in() ) { return ''; }
+		if ( ! self::enabled() ) { return ''; }
+		if ( is_user_logged_in() ) { return self::guest( wp_get_current_user() ) ? '<p class="lug-demo-session">Your temporary demo member session is active. Personal layouts are private; shared layouts and external delivery are disabled.</p>' : ''; }
 		return '<form class="lug-demo-guest-entry" method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">'
 			. '<input type="hidden" name="action" value="' . self::ACTION . '">'
 			. wp_nonce_field( self::ACTION, '_lug_guest_nonce', true, false )
@@ -96,8 +97,21 @@ final class LUG_Demo_Guest_Access {
 			$user = get_userdata( $id );
 			// Never delete an account that has since gained a real role/capability.
 			if ( $user && 0 === strpos( $user->user_login, 'lug-guest-' ) && ! array_diff( array_keys( array_filter( $user->caps ) ), array( 'subscriber', 'bbp_participant' ) ) ) {
+				self::release_demo_records( $id );
 				wp_delete_user( $id );
 			}
+		}
+	}
+
+	public static function release_demo_records( $id ) {
+		global $wpdb;
+		if ( function_exists( 'lug_layout_table_name' ) ) { $wpdb->delete( lug_layout_table_name(), array( 'owner_user_id' => $id, 'visibility' => 'private' ) ); }
+		$tables = array( $wpdb->prefix . 'lug_display_reservations' => 'user_id', $wpdb->prefix . 'lug_display_subscribers' => 'user_id', 'lug_checkout_cart_holds' => 'user_id', 'lug_events_participants' => 'user_id' );
+		foreach ( $tables as $table => $column ) {
+			if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) { $wpdb->delete( $table, array( $column => $id ) ); }
+		}
+		if ( function_exists( 'lug_checkout_cancel_request' ) && $wpdb->get_var( "SHOW TABLES LIKE 'lug_checkout_requests'" ) === 'lug_checkout_requests' ) {
+			foreach ( $wpdb->get_col( $wpdb->prepare( "SELECT id FROM lug_checkout_requests WHERE requester_id=%d AND status IN ('submitted','pending')", $id ) ) as $request_id ) { lug_checkout_cancel_request( $request_id, $id ); }
 		}
 	}
 
@@ -113,6 +127,7 @@ final class LUG_Demo_Guest_Access {
 			// Insert private from the outset; the regular creator defaults to members.
 			global $wpdb;
 			$uid = get_current_user_id();
+			if ( (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . lug_layout_table_name() . ' WHERE owner_user_id=%d', $uid ) ) >= 10 ) { return new WP_Error( 'lug_demo_layout_limit', 'Keep up to ten personal demo layouts. Delete one to create another.', array( 'status' => 429 ) ); }
 			$name = sanitize_text_field( $request->get_param( 'name' ) );
 			if ( ! $name ) { return new WP_Error( 'missing_name', 'A layout name is required.', array( 'status' => 400 ) ); }
 			$json = array( 'schemaVersion' => 1, 'groups' => array(), 'units' => array( 'canonical' => 'inches', 'display' => 'inches' ), 'canvas' => array( 'panX' => 0, 'panY' => 0, 'zoom' => 1 ), 'layers' => array( 'tables' => array(), 'equipment' => array(), 'baseplates' => array(), 'mocs' => array(), 'annotations' => array() ), 'legend' => array( 'collapsed' => false ), 'meta' => array( 'createdBy' => $uid, 'lastEditedBy' => $uid, 'permissions' => array( 'edit_policy' => 'owner', 'editor_ids' => array() ) ) );
@@ -147,6 +162,21 @@ add_filter( 'rest_dispatch_request', static function ( $response, $request, $rou
 add_filter( 'pre_option_lug_layout_collaboration_enabled', static function ( $value ) {
 	return LUG_Demo_Guest_Access::enabled() ? 0 : $value;
 }, PHP_INT_MAX );
+
+// No public demo action may call a real club integration. Keep update metadata
+// and public training lookups available; fail closed for other server requests.
+add_filter( 'pre_http_request', static function ( $result, $args, $url ) {
+	if ( ! LUG_Demo_Guest_Access::enabled() ) { return $result; }
+	$host = strtolower( (string) wp_parse_url( $url, PHP_URL_HOST ) );
+	$method = strtoupper( $args['method'] ?? 'GET' );
+	if ( 'lugtools.steelcitylug.com' === $host ) { return $result; }
+	if ( in_array( $host, array( 'api.wordpress.org', 'downloads.wordpress.org', 's.w.org' ), true ) ) { return $result; }
+	if ( in_array( $method, array( 'GET', 'HEAD' ), true ) && in_array( $host, array( 'api.wordpress.org', 'downloads.wordpress.org', 's.w.org', 'www.youtube.com', 'www.youtube-nocookie.com', 'i.ytimg.com' ), true ) ) { return $result; }
+	return new WP_Error( 'lug_demo_external_request_blocked', 'External integrations are disabled on the public demo.' );
+}, PHP_INT_MAX, 3 );
+add_filter( 'pre_option_lug_bbp_discord_enabled', static function ( $value ) { return LUG_Demo_Guest_Access::enabled() ? 0 : $value; }, PHP_INT_MAX );
+add_filter( 'pre_option_lug_discord_connect_opts', static function ( $value ) { return LUG_Demo_Guest_Access::enabled() ? array( 'enable_role_sync' => 0 ) : $value; }, PHP_INT_MAX );
+add_filter( 'show_admin_bar', static function ( $show ) { return LUG_Demo_Guest_Access::guest( wp_get_current_user() ) ? false : $show; }, PHP_INT_MAX );
 
 add_action( 'admin_post_nopriv_lug_demo_guest', array( 'LUG_Demo_Guest_Access', 'enter' ) );
 add_action( 'admin_post_lug_demo_guest', array( 'LUG_Demo_Guest_Access', 'enter' ) );

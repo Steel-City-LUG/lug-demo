@@ -4,32 +4,27 @@ Demo-only orchestration plugin for `lugtools.steelcitylug.com`.
 
 This repository is intentionally separate from `lug-platform`. It should not be included in the downloadable platform connector or installed on partner LUG sites.
 
-## Current scope
+## Current demo access
 
-- Admin screen for seed/rebuild and reset.
-- First activation/version update automatically seeds the demo and makes the welcome page the site front page for the administrator who completes the activation flow.
-- A welcoming account directory with one-click demo login links.
-- A sandbox for all demo accounts: WordPress dashboard, settings, user administration, plugin/theme installation, updates, and site configuration are blocked. Only explicitly allowlisted LUG plugin screens and `lug_` plugin actions remain available.
-- Three public demo identities: `lug-demo-member` (member), `lug-demo-organizer` (organizer/event owner), and `demo-super` (inventory/user-editor manager). The internal `system-messages` account is not shown as a persona to try.
-- Existing non-demo users are never overwritten or deleted if their login collides with a fixture account.
-- A dedicated `demo-super` account for trying lug-core inventory management and its member editor. It is still sandboxed: WordPress settings, plugin/theme/core management, and unrelated admin screens remain blocked.
-- A `system-messages` account configured as lug-core's default sender for welcome messages and member notifications.
-- Seeded WordPress pages and a generated demo navigation menu.
-- Seeded events through the installed `lug-core` event provider.
-- Seeded events are explicitly owned by `lug-demo-organizer` so the organizer account can open an existing event and try its edit, shift, signup, sharing, and management workflows without first completing the event form.
-- Seeded event shifts with realistic capacities and member signups.
-- Seeded bbPress forums, topics, and replies.
-- Seeded BuddyPress activity updates.
-- Seeded member profile metadata and Pittsburgh-area ZIP codes for the location tools.
-- Assigns demo members to the installed officer roles and restores previous assignments on reset.
-- Reports the availability of the surrounding LUG tools from the demo admin screen, including officers, ZIP map, welcome messages, Discord, and layout tools.
-- Showcase guidance for the complete Steel City LUG plugin family. The target demo site is expected to have the companion plugins installed; local smoke tests may still skip integrations that are not present in the development checkout.
-- Quick-login URLs after seeding:
-  - `?lug_demo_login=lug-demo-member`
-  - `?lug_demo_login=lug-demo-organizer`
-  - `?lug_demo_login=demo-super`
+Visitors use the password-free button to start an independent two-hour subscriber
+session. No shared credentials are published. Retired QA, organizer, system and
+super-user identities remain locked by the separate must-use account guard.
 
-The plugin is intentionally private to `lugtools.steelcitylug.com`. Its fixtures are designed to make that site feel like an established local LUG where visitors can explore the complete toolset. It is not intended for distribution to other LUG sites.
+`mu-plugins/lug-demo-guest-access.php` is installed directly in the tools site's
+must-use directory. Guest permissions are bounded, existing session cookies expire,
+shared layouts and real external integrations are disabled, and guests cannot
+manage WordPress. Personal layouts are private and owner-only.
+
+The welcome page, Getting Started, Plugin Tour and All Tools use
+`fixtures/demo-guide.php`. Every installed tool has a task and an explicit live or
+preview-only access level. Bricks Cubed is identified as training-only because it
+is not installed on this demo. No promise of administrator access is made.
+
+`tools/provision-demo.php` is a CLI-only, demo-host-only, idempotent setup operation.
+It creates missing legacy LUG Core tables from schema-only fixtures (never copied
+member data), adds sample inventory, events/shifts and a rotating display, and
+creates the missing public preview pages. It does not rebuild accounts or overwrite
+unowned pages or existing tables. Run it from a reviewed release with WP-CLI.
 
 ## Public demo email policy
 
@@ -102,3 +97,10 @@ Replace the introductory pages with a task-based, hands-on plugin journey.
 Remove normal-journey reset messaging and retired demo-account prompts.
 Keep account access expectations clear and label the Newsletter showcase read-only.
 Existing demo data is not reseeded.
+
+## 0.1.18 / Guest Access 1.0.3
+
+Replace outdated account instructions with a task-based catalog covering live and
+preview-only workflows. Provision missing demo schema and sample content explicitly.
+Keep introductory content updates separate from full seed/reset. Harden demo-only
+outbound requests and cleanup; hide misleading WordPress toolbar links for guests.
