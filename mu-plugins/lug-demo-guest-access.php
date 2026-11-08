@@ -2,7 +2,7 @@
 /**
  * Plugin Name: LUG Demo Guest Access
  * Description: Temporary, unprivileged visitor sessions for the tools demo only.
- * Version: 1.0.4
+ * Version: 1.0.5
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
@@ -59,7 +59,7 @@ final class LUG_Demo_Guest_Access {
 			$ip_key = 'lug_guest_' . hash_hmac( 'sha256', (string) ( $_SERVER['REMOTE_ADDR'] ?? 'unknown' ), wp_salt() );
 			$ip_count = (int) get_transient( $ip_key );
 			$total = (int) get_transient( 'lug_guest_total' );
-			if ( $ip_count >= 6 || $total >= 60 ) {
+			if ( $ip_count >= 30 || $total >= 60 ) {
 				throw new RuntimeException( 'Demo sign-in is busy. Please try again later.' );
 			}
 			set_transient( $ip_key, $ip_count + 1, HOUR_IN_SECONDS );

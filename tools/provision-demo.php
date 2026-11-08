@@ -22,6 +22,12 @@ if ( ! get_option( LUG_Demo::OPTION_EVENTS ) ) {
 }
 $demo->seed_member_profiles( LUG_Demo::BATCH_ID );
 $demo->seed_officer_assignments( LUG_Demo::BATCH_ID );
+foreach ( (array) get_option( LUG_Demo::OPTION_EVENTS, array() ) as $event_id ) {
+	$wpdb->update( 'lug_events', array( 'name' => 'Demo public display planning night (upcoming)' ), array( 'id' => (int) $event_id, 'name' => 'Summer public display planning night (upcoming)' ) );
+}
+if ( function_exists( 'lug_ispy_table_name' ) ) {
+	$wpdb->update( lug_ispy_table_name( 'events' ), array( 'name' => 'I-Spy: Steel City Landmarks', 'message' => 'Find each landmark in the demonstration display and check it off on your phone.' ), array( 'name' => 'Build Along: Steel City Landmarks' ) );
+}
 
 // BBN's standalone creator is opt-in; a link alone does not register its route.
 $bbn = (array) get_option( 'bbn_settings', array() );

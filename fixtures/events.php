@@ -35,7 +35,7 @@ return array(
 		'community_enjoyment' => 'A guided build followed by peer feedback and ideas for next projects.',
 	),
 	array(
-		'name'                => 'Summer public display planning night (upcoming)',
+		'name'                => 'Demo public display planning night (upcoming)',
 		'creator_login'       => 'lug-demo-organizer',
 		'start_date'          => $future_meeting . ' 19:00:00',
 		'end_date'            => $future_meeting . ' 21:00:00',

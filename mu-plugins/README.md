@@ -1,4 +1,4 @@
-# Demo guest access 1.0.4
+# Demo guest access 1.0.5
 
 Install `lug-demo-guest-access.php` directly into the tools site's
 `wp-content/mu-plugins/` directory. It only admits visitors when the configured
@@ -24,7 +24,7 @@ invalidates its session. Expired sessions are denied immediately; expired guest
 accounts are removed hourly and when a new session starts. Cleanup removes their
 WordPress content; companion-plugin data follows each plugin's user-deletion hooks.
 
-Admissions are serialized and limited to six per originating IP and sixty sitewide
+Admissions are serialized and limited to thirty per originating IP and sixty sitewide
 per hour. The origin IP comes from REMOTE_ADDR, never a client-controlled header.
 Networks behind the same proxy share this limit. This is a public demo, so visitors
 must not enter personal or sensitive information. The site must contain demo data.

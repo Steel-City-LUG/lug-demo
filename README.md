@@ -17,8 +17,8 @@ manage WordPress. Personal layouts are private and owner-only.
 
 The welcome page, Getting Started, Plugin Tour and All Tools use
 `fixtures/demo-guide.php`. Every installed tool has a task and an explicit live or
-preview-only access level. Bricks Cubed is identified as training-only because it
-is not installed on this demo. No promise of administrator access is made.
+preview-only access level. Bricks Cubed has a live member editor and a separate training series. No promise
+of administrator access or physical structural safety is made.
 
 `tools/provision-demo.php` is a CLI-only, demo-host-only, idempotent setup operation.
 It creates missing legacy LUG Core tables from schema-only fixtures (never copied
@@ -98,9 +98,11 @@ Remove normal-journey reset messaging and retired demo-account prompts.
 Keep account access expectations clear and label the Newsletter showcase read-only.
 Existing demo data is not reseeded.
 
-## 0.1.18 / Guest Access 1.0.3
+## 0.1.21 / Guest Access 1.0.5
 
 Replace outdated account instructions with a task-based catalog covering live and
 preview-only workflows. Provision missing demo schema and sample content explicitly.
 Keep introductory content updates separate from full seed/reset. Harden demo-only
 outbound requests and cleanup; hide misleading WordPress toolbar links for guests.
+
+Review coverage, changes and limits: [Demo review](DEMO-REVIEW-2026-11-08.md).

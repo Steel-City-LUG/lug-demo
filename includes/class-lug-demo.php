@@ -78,7 +78,7 @@ final class LUG_Demo {
 	public function maybe_seed_after_activation() {
 		$events_ready = ! empty( get_option( self::OPTION_EVENTS, array() ) );
 		// Presentation-only upgrades must not reseed existing demo accounts, events or content.
-		if ( $events_ready && in_array( LUG_DEMO_VERSION, array( '0.1.13', '0.1.14', '0.1.15', '0.1.16', '0.1.17', '0.1.18', '0.1.19', '0.1.20' ), true ) ) {
+		if ( $events_ready && in_array( LUG_DEMO_VERSION, array( '0.1.13', '0.1.14', '0.1.15', '0.1.16', '0.1.17', '0.1.18', '0.1.19', '0.1.20', '0.1.21' ), true ) ) {
 			if ( LUG_DEMO_VERSION !== get_option( self::OPTION_SEEDED_VERSION ) ) {
 				update_option( self::OPTION_SEEDED_VERSION, LUG_DEMO_VERSION, false );
 			}
@@ -770,7 +770,7 @@ final class LUG_Demo {
 		$wpdb->update( 'lug_events', array( 'end_date' => wp_date( 'Y-m-d', strtotime( '+1 day', current_time( 'timestamp' ) ) ) ), array( 'id' => $current_event_id ), array( '%s' ), array( '%d' ) );
 		$now = current_time( 'mysql' );
 		$event_columns = array_map( 'strtolower', (array) $wpdb->get_col( "DESCRIBE `{$events_table}`", 0 ) );
-		$event_data = array( 'name' => 'Build Along: Steel City Landmarks', 'message' => 'Find the hidden landmarks, scan the QR code, and build along from your phone.', 'lug_event' => $current_event_id, 'active' => 1, 'started' => 0, 'completed' => 0, 'updated_by' => get_current_user_id(), 'created_at' => $now, 'updated_at' => $now );
+		$event_data = array( 'name' => 'I-Spy: Steel City Landmarks', 'message' => 'Find each landmark in the demonstration display and check it off on your phone.', 'lug_event' => $current_event_id, 'active' => 1, 'started' => 0, 'completed' => 0, 'updated_by' => get_current_user_id(), 'created_at' => $now, 'updated_at' => $now );
 		$wpdb->insert( $events_table, array_intersect_key( $event_data, array_flip( $event_columns ) ) );
 		$ispy_id = (int) $wpdb->insert_id;
 		if ( ! $ispy_id ) {

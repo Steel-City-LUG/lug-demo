@@ -16,7 +16,7 @@ $tools = array(
 	array( 'Welcome messages and notifications', '/member-notifications/', 'Read the example welcome message and see where event notifications fit the member journey.', 'Workflow preview. No real email is delivered; guest sessions are temporary.', '' ),
 	array( 'Newsletter', '/newsletter/', 'Inspect sample monthly drafts, the fictional audience and simulated reports, then follow the training series.', 'Read-only samples. Editing, real audience imports, sending and scheduling are blocked.', 'lug-newsletter' ),
 	array( 'Discord bridge, Discord Connect and LUG Platform', '/integrations/', 'Review how forum announcements, membership connections and site linking work together.', 'Setup preview only. Real OAuth, webhooks, role syncing and cross-site connections are disabled.', '' ),
-	array( 'Bricks Cubed', '/training/?tool=bricks-cubed', 'Follow the training series to see the editor and building workflow.', 'Video-only: Bricks Cubed is not installed here. This is not a live editor demo.', '' ),
+	array( 'Bricks Cubed', '/bricks-cubed/', 'Load a built-in example, change one face, regenerate, rotate the preview, inspect the Build diagnostics, then save your own copy.', 'The member editor and your own saved sculptures are live. Build diagnostics are not a structural safety certification.', 'bricks-cubed' ),
 );
 $catalog = $start . '<p>Pick a plugin below. Each has a first task and an explicit access level.</p>';
 foreach ( $tools as $tool ) {
@@ -32,5 +32,5 @@ return array(
 	'getting-started' => $start . '<h2>Choose a first task</h2>' . $first_tasks . '<p>For inventory, try the checkout request cart. For I-Spy, finish and restart the public checklist. Administrative workflows and external integrations have explicitly labeled previews.</p>' . $more . $limits,
 	'plugin-tour' => $catalog,
 	'active-tools' => $catalog,
-	'about-this-demo' => $start . '<p>The club records, people, locations and examples shown here are demonstration content. This site illustrates member workflows; it does not grant access to a real club or a persistent member account.</p>' . $limits . '<p>Newsletter, officer administration and integrations are preview-only. Bricks Cubed currently has training only.</p>' . $more,
+	'about-this-demo' => $start . '<p>The club records, people, locations and examples shown here are demonstration content. This site illustrates member workflows; it does not grant access to a real club or a persistent member account.</p>' . $limits . '<p>Newsletter, officer administration and integrations are preview-only. Bricks Cubed is available as a member editor with training.</p>' . $more,
 );
