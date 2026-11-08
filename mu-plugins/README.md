@@ -1,4 +1,4 @@
-# Demo guest access 1.0.1
+# Demo guest access 1.0.2
 
 Install `lug-demo-guest-access.php` directly into the tools site's
 `wp-content/mu-plugins/` directory. It only admits visitors when the configured

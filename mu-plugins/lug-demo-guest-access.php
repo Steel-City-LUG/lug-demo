@@ -2,7 +2,7 @@
 /**
  * Plugin Name: LUG Demo Guest Access
  * Description: Temporary, unprivileged visitor sessions for the tools demo only.
- * Version: 1.0.1
+ * Version: 1.0.2
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
@@ -136,7 +136,11 @@ final class LUG_Demo_Guest_Access {
 	}
 }
 
-add_filter( 'rest_request_before_callbacks', array( 'LUG_Demo_Guest_Access', 'personal_layouts' ), PHP_INT_MAX, 3 );
+// Dispatch interception runs after the route's permission callback and replaces
+// its creator. A before-callback filter can reject but cannot replace a success.
+add_filter( 'rest_dispatch_request', static function ( $response, $request, $route, $handler ) {
+	return LUG_Demo_Guest_Access::personal_layouts( $response, $handler, $request );
+}, PHP_INT_MAX, 4 );
 
 // Cross-LUG sharing includes public bearer-token routes, so disable it for the
 // entire demo host, including anonymous requests, rather than only logged-in guests.
