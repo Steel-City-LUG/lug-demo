@@ -1,9 +1,16 @@
-# Demo guest access 1.0.0
+# Demo guest access 1.0.1
 
 Install `lug-demo-guest-access.php` directly into the tools site's
 `wp-content/mu-plugins/` directory. It only admits visitors when the configured
 home host is exactly `lugtools.steelcitylug.com`; Test and Production stay closed.
 Keep the retired-account guard installed.
+
+Cross-LUG shared layouts are forced off for the entire demo host. Shared-project
+hosting, invitations and joining are unavailable, including public bearer-token
+routes. Guest-created local layouts are private and owner-only. Guests cannot
+open or modify another person's layout, change sharing permissions, associate
+layouts with events, or duplicate shared layouts. Their layout list is restricted
+to their own work. Ordinary personal layout creation and editing remain available.
 
 The welcome-page account directory, page footer and WordPress login footer offer
 a POST button that starts an independent two-hour subscriber session. Passwords

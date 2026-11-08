@@ -10,6 +10,7 @@ try {
 	$assert( ! LUG_Demo_Guest_Access::enabled(), 'Disabled on local/other hosts' );
 	$host = static function () { return 'https://lugtools.steelcitylug.com'; };
 	add_filter( 'pre_option_home', $host );
+	$assert( 0 === get_option( 'lug_layout_collaboration_enabled' ), 'Cross-LUG sharing disabled on demo host' );
 	foreach ( array( time() + 7200, time() - 1 ) as $expires ) {
 		$id = wp_insert_user( array( 'user_login' => 'lug-guest-' . bin2hex( random_bytes( 12 ) ), 'user_pass' => bin2hex( random_bytes( 32 ) ), 'role' => 'subscriber', 'meta_input' => array( LUG_Demo_Guest_Access::META => $expires ) ) );
 		$assert( ! is_wp_error( $id ), 'Guest creation' );
@@ -18,6 +19,14 @@ try {
 	$guest = get_userdata( $ids[0] );
 	$assert( LUG_Demo_Guest_Access::valid( $guest ), 'Active subscriber accepted' );
 	$assert( user_can( $guest, 'read' ), 'Member read access' );
+	wp_set_current_user( $guest->ID );
+	$join = new WP_REST_Request( 'POST', '/lug-layout/v1/shared/join' );
+	$assert( is_wp_error( LUG_Demo_Guest_Access::personal_layouts( null, array(), $join ) ), 'Shared layout joining denied' );
+	$list = new WP_REST_Request( 'GET', '/lug-layout/v1/layouts' );
+	$list->set_param( 'user_id', 1 );
+	LUG_Demo_Guest_Access::personal_layouts( null, array(), $list );
+	$assert( $guest->ID === $list->get_param( 'user_id' ), 'Cannot list another member layouts' );
+	wp_set_current_user( 0 );
 	foreach ( array( 'manage_options', 'edit_users', 'install_plugins', 'edit_posts', 'upload_files', 'unfiltered_html' ) as $cap ) {
 		$assert( ! user_can( $guest, $cap ), 'Denied ' . $cap );
 	}

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: LUG Demo Guest Access
  * Description: Temporary, unprivileged visitor sessions for the tools demo only.
- * Version: 1.0.0
+ * Version: 1.0.1
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
@@ -100,7 +100,49 @@ final class LUG_Demo_Guest_Access {
 			}
 		}
 	}
+
+	public static function personal_layouts( $response, $handler, $request ) {
+		if ( ! self::enabled() || ! self::guest( wp_get_current_user() ) || null !== $response ) { return $response; }
+		$route = $request->get_route();
+		if ( 0 !== strpos( $route, '/lug-layout/v1/' ) ) { return $response; }
+		$denied = new WP_Error( 'lug_demo_personal_layouts_only', 'Demo visitors can use personal layouts only.', array( 'status' => 403 ) );
+		if ( 0 === strpos( $route, '/lug-layout/v1/shared/' ) ) { return $denied; }
+		if ( '/lug-layout/v1/layouts' === $route ) {
+			if ( 'GET' === $request->get_method() ) { $request->set_param( 'user_id', get_current_user_id() ); return $response; }
+			if ( 'POST' !== $request->get_method() ) { return $denied; }
+			// Insert private from the outset; the regular creator defaults to members.
+			global $wpdb;
+			$uid = get_current_user_id();
+			$name = sanitize_text_field( $request->get_param( 'name' ) );
+			if ( ! $name ) { return new WP_Error( 'missing_name', 'A layout name is required.', array( 'status' => 400 ) ); }
+			$json = array( 'schemaVersion' => 1, 'groups' => array(), 'units' => array( 'canonical' => 'inches', 'display' => 'inches' ), 'canvas' => array( 'panX' => 0, 'panY' => 0, 'zoom' => 1 ), 'layers' => array( 'tables' => array(), 'equipment' => array(), 'baseplates' => array(), 'mocs' => array(), 'annotations' => array() ), 'legend' => array( 'collapsed' => false ), 'meta' => array( 'createdBy' => $uid, 'lastEditedBy' => $uid, 'permissions' => array( 'edit_policy' => 'owner', 'editor_ids' => array() ) ) );
+			$ok = $wpdb->insert( lug_layout_table_name(), array( 'name' => $name, 'description' => wp_kses_post( (string) $request->get_param( 'description' ) ), 'owner_user_id' => $uid, 'updated_by_user_id' => $uid, 'event_id' => null, 'visibility' => 'private', 'layout_json' => wp_json_encode( $json ), 'schema_version' => 1 ) );
+			return $ok ? new WP_REST_Response( array( 'id' => (int) $wpdb->insert_id ), 200 ) : new WP_Error( 'layout_create_failed', 'Could not create layout.', array( 'status' => 500 ) );
+		}
+		if ( preg_match( '#^/lug-layout/v1/layouts/(\d+)(?:/|$)#', $route, $match ) ) {
+			$row = lug_layout_get_row( (int) $match[1] );
+			if ( ! $row || (int) $row->owner_user_id !== get_current_user_id() || 'private' !== $row->visibility ) { return $denied; }
+			if ( str_ends_with( $route, '/duplicate' ) ) { return $denied; }
+			if ( ! in_array( $request->get_method(), array( 'GET', 'HEAD' ), true ) ) {
+				foreach ( array( 'visibility' => 'private', 'edit_policy' => 'owner', 'editPolicy' => 'owner' ) as $key => $allowed ) {
+					if ( $request->has_param( $key ) && $allowed !== $request->get_param( $key ) ) { return $denied; }
+				}
+				foreach ( array( 'editor_ids', 'editorIds', 'event_id' ) as $key ) {
+					if ( $request->get_param( $key ) ) { return $denied; }
+				}
+			}
+		}
+		return $response;
+	}
 }
+
+add_filter( 'rest_request_before_callbacks', array( 'LUG_Demo_Guest_Access', 'personal_layouts' ), PHP_INT_MAX, 3 );
+
+// Cross-LUG sharing includes public bearer-token routes, so disable it for the
+// entire demo host, including anonymous requests, rather than only logged-in guests.
+add_filter( 'pre_option_lug_layout_collaboration_enabled', static function ( $value ) {
+	return LUG_Demo_Guest_Access::enabled() ? 0 : $value;
+}, PHP_INT_MAX );
 
 add_action( 'admin_post_nopriv_lug_demo_guest', array( 'LUG_Demo_Guest_Access', 'enter' ) );
 add_action( 'admin_post_lug_demo_guest', array( 'LUG_Demo_Guest_Access', 'enter' ) );
