@@ -2,7 +2,7 @@
 /**
  * Plugin Name: LUG Demo Guest Access
  * Description: Temporary, unprivileged visitor sessions for the tools demo only.
- * Version: 1.0.3
+ * Version: 1.0.4
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
@@ -197,7 +197,7 @@ add_filter( 'authenticate', static function ( $user ) {
 }, PHP_INT_MAX );
 add_filter( 'user_has_cap', static function ( $caps, $required, $args, $user ) {
 	if ( ! LUG_Demo_Guest_Access::guest( $user ) ) { return $caps; }
-	$allowed = LUG_Demo_Guest_Access::valid( $user ) ? array( 'read', 'exist', 'level_0', 'spectate', 'participate', 'read_private_forums', 'publish_topics', 'edit_topics', 'publish_replies', 'edit_replies', 'assign_topic_tags' ) : array();
+	$allowed = LUG_Demo_Guest_Access::valid( $user ) ? array( 'read', 'exist', 'level_0', 'lug_rd_reserve', 'spectate', 'participate', 'read_private_forums', 'publish_topics', 'edit_topics', 'publish_replies', 'edit_replies', 'assign_topic_tags' ) : array();
 	foreach ( $caps as $cap => $value ) { $caps[ $cap ] = $value && in_array( $cap, $allowed, true ); }
 	return $caps;
 }, PHP_INT_MAX, 4 );
