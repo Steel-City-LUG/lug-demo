@@ -6,7 +6,7 @@ if ( ! defined( 'WP_CLI' ) || ! WP_CLI || ! class_exists( 'LUG_Demo' ) || 'lugto
 global $wpdb;
 $created = array();
 // Exported CREATE statements only: no member records or copied site data.
-foreach ( explode( ";\n\n", file_get_contents( dirname( __DIR__ ) . '/fixtures/core-schema.sql' ) ) as $sql ) {
+foreach ( require dirname( __DIR__ ) . '/fixtures/core-schema.php' as $sql ) {
 	if ( ! preg_match( '/CREATE TABLE IF NOT EXISTS `([a-z_]+)`/', $sql, $match ) ) { continue; }
 	$table = $match[1];
 	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) { continue; }

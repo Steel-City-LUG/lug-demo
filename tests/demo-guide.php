@@ -11,6 +11,9 @@ foreach ( array( 'Private, owner-only', 'Read-only samples', 'Video-only', 'Setu
 	if ( ! str_contains( $guide['active-tools'], $label ) ) { throw new RuntimeException( 'Missing demo boundary: ' . $label ); }
 }
 $schema = file_get_contents( dirname( __DIR__ ) . '/fixtures/core-schema.sql' );
+foreach ( require dirname( __DIR__ ) . '/fixtures/core-schema.php' as $query ) {
+	if ( 1 !== substr_count( $query, 'CREATE TABLE IF NOT EXISTS' ) ) { throw new RuntimeException( 'Setup must execute one table definition at a time.' ); }
+}
 if ( preg_match( '/\b(?:INSERT INTO|REPLACE INTO|DROP TABLE|TRUNCATE TABLE)\b/i', $schema ) ) { throw new RuntimeException( 'Setup must contain schema only.' ); }
 if ( str_contains( $schema, 'ENGINE=MyISAM' ) ) { throw new RuntimeException( 'New demo tables must support transactions.' ); }
 echo "Visitor guide and schema safety checks passed.\n";
