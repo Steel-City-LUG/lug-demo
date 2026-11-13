@@ -106,3 +106,7 @@ Keep introductory content updates separate from full seed/reset. Harden demo-onl
 outbound requests and cleanup; hide misleading WordPress toolbar links for guests.
 
 Review coverage, changes and limits: [Demo review](DEMO-REVIEW-2026-11-08.md).
+
+## 0.1.22
+
+- Publish the six current Social Posts training lessons, including event featured photos, from the canonical training inventory.

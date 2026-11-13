@@ -609,5 +609,61 @@ return array(
 				),
 			),
 		),
+		'socialposts' => array(
+			'name' => 'LUG Social Posts',
+			'playlists' => array(
+				'Andrew' => 'PLcmgW09bZfRI'
+			),
+			'episodes' => array(
+				array(
+					'number' => 1,
+					'title' => 'Handle Facebook, Instagram and Email Conversations',
+					'summary' => 'Read, claim, reply to and resolve shared conversations across all three sources.',
+					'videos' => array(
+						'Andrew' => 'afgIKRkNEUQ'
+					),
+				),
+				array(
+					'number' => 2,
+					'title' => 'Save a Draft and Submit a Social Post',
+					'summary' => 'Create a photo post for Facebook and Instagram, save a draft and submit it for review.',
+					'videos' => array(
+						'Andrew' => 'c_ugwGWYAdE'
+					),
+				),
+				array(
+					'number' => 3,
+					'title' => 'Review, Approve and Schedule Social Posts',
+					'summary' => 'Review a suggestion, choose its posting time, confirm the schedule and reschedule safely.',
+					'videos' => array(
+						'Andrew' => 'aGDzA2QSCJk'
+					),
+				),
+				array(
+					'number' => 4,
+					'title' => 'Choose Alerts and Follow Up on Notifications',
+					'summary' => 'Save notification preferences and follow a grouped alert back to the work that needs attention.',
+					'videos' => array(
+						'Andrew' => 'NVTqkhhO0bU'
+					),
+				),
+				array(
+					'number' => 5,
+					'title' => 'Read Social Post Performance and Compare Results',
+					'summary' => 'Compare account activity and post metrics, filter results, and interpret reach and link visits correctly.',
+					'videos' => array(
+						'Andrew' => 'E1JzIIXu_tY'
+					),
+				),
+				array(
+					'number' => 6,
+					'title' => 'Suggest an Event Post with Its Featured Photo',
+					'summary' => 'Save a featured photo on an event, create its social post draft with one button and submit it for review.',
+					'videos' => array(
+						'Andrew' => 'h2WD4Kyy1YQ'
+					),
+				),
+			),
+		),
 	),
 );
