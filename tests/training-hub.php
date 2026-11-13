@@ -3,7 +3,7 @@
  * Targeted training hub checks. Run with the local WordPress PHP configuration.
  */
 
-$root = dirname( __DIR__, 4 );
+$root = getenv( 'LUG_DEMO_TEST_WP_ROOT' ) ?: dirname( __DIR__, 4 );
 require_once $root . '/wp-load.php';
 require_once dirname( __DIR__ ) . '/lug-demo.php';
 
@@ -51,7 +51,7 @@ if ( false === strpos( $mosaic, 'PLfKKOOpgnNNc' ) || false === strpos( $mosaic, 
 }
 
 // Every published plugin series must remain reachable with its complete episode list.
-foreach ( array( 'brick-by-numbers' => 8, 'lug-core' => 15, 'layout-designer' => 14, 'bricks-cubed' => 8, 'geobrick' => 9, 'lug-newsletter' => 10 ) as $tool_id => $count ) {
+foreach ( array( 'brick-by-numbers' => 8, 'lug-core' => 15, 'layout-designer' => 14, 'bricks-cubed' => 8, 'geobrick' => 9, 'lug-newsletter' => 10, 'socialposts' => 6, 'rotating-displays' => 6 ) as $tool_id => $count ) {
 	$_GET = array( 'tool' => $tool_id );
 	$html = $renderer->render();
 	if ( $count !== substr_count( $html, '<li value=' ) || false === strpos( $html, 'aria-current="true"' ) ) {
@@ -59,4 +59,4 @@ foreach ( array( 'brick-by-numbers' => 8, 'lug-core' => 15, 'layout-designer' =>
 	}
 }
 
-echo "training hub checks passed (six series, 64 episodes)\n";
+echo "training hub checks passed (eight series, 76 episodes)\n";

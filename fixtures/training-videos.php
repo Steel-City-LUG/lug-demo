@@ -665,5 +665,61 @@ return array(
 				),
 			),
 		),
+		'rotating-displays' => array(
+			'name' => 'LUG Rotating Displays',
+			'playlists' => array(
+				'Andrew' => 'PLLo3rwvJECr8'
+			),
+			'episodes' => array(
+				array(
+					'number' => 1,
+					'title' => 'Reserve Your First Display',
+					'summary' => 'Find a suitable space, check its saved measurements and reserve dates in one dialog.',
+					'videos' => array(
+						'Andrew' => 'ljL0dB1l9RA'
+					),
+				),
+				array(
+					'number' => 2,
+					'title' => 'Change or Cancel a Reservation',
+					'summary' => 'Return through My reservations, edit dates and free a space with an inline confirmation.',
+					'videos' => array(
+						'Andrew' => 'TJX1j4EesqA'
+					),
+				),
+				array(
+					'number' => 3,
+					'title' => 'Add Build Details and Photos',
+					'summary' => 'Prepare an upcoming build, upload its own photos and browse occupied-build history.',
+					'videos' => array(
+						'Andrew' => '51WBvUAjNoQ'
+					),
+				),
+				array(
+					'number' => 4,
+					'title' => 'Follow a Display and Coordinate Handoffs',
+					'summary' => 'Follow changes and use optional BuddyPress handoff messages to coordinate adjacent bookings.',
+					'videos' => array(
+						'Andrew' => 'hqAlEACLFAg'
+					),
+				),
+				array(
+					'number' => 5,
+					'title' => 'Add Locations, Displays and Envira Photos',
+					'summary' => 'Create reusable venue/display records, copy measurements and link a real existing Envira gallery.',
+					'videos' => array(
+						'Andrew' => 'SUIUU0tmAT8'
+					),
+				),
+				array(
+					'number' => 6,
+					'title' => 'Manage Availability and Reservation Policies',
+					'summary' => 'Configure booking limits and privacy, pause new reservations and revoke a slot with a required reason.',
+					'videos' => array(
+						'Andrew' => '_QXcmEUNw8M'
+					),
+				),
+			),
+		),
 	),
 );

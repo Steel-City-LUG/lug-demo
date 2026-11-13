@@ -110,3 +110,10 @@ Review coverage, changes and limits: [Demo review](DEMO-REVIEW-2026-11-08.md).
 ## 0.1.22
 
 - Publish the six current Social Posts training lessons, including event featured photos, from the canonical training inventory.
+
+
+## 0.1.23
+
+- Add the six reviewed Rotating Displays lessons to the training hub from the canonical publishing inventory.
+- Preserve existing demo data during this presentation-only upgrade.
+- Validate all eight training series (76 episodes); permit an explicit local WordPress root for isolated worktree checks.
