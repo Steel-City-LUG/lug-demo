@@ -31,4 +31,29 @@ class BoundaryTests(unittest.TestCase):
         with self.assertRaises(RuntimeError): preflight.verify(FakeFTP(source=b'Plugin Name: Wingspan Optimizer\n'), './')
 
 
+class TransportTests(unittest.TestCase):
+    def test_verified_tls_precedes_credentials_and_data(self):
+        events = []
+        class FTP:
+            def connect(self, host, port): events.append(('connect', host, port))
+            def auth(self): events.append('verified-tls')
+            def login(self, *args): events.append('login')
+            def prot_p(self): events.append('encrypted-data')
+        preflight.connect_secure(FTP(), 'fixture', 'fixture')
+        self.assertEqual(events[0][2], 21)
+        self.assertEqual(events[1:], ['verified-tls', 'login', 'encrypted-data'])
+
+    def test_certificate_failure_prevents_credentials(self):
+        import ssl
+        events = []
+        class FTP:
+            def connect(self, *args): events.append('connect')
+            def auth(self): raise ssl.SSLCertVerificationError('fixture invalid certificate')
+            def login(self, *args): events.append('login')
+            def prot_p(self): events.append('encrypted-data')
+        with self.assertRaises(ssl.SSLCertVerificationError):
+            preflight.connect_secure(FTP(), 'fixture', 'fixture')
+        self.assertEqual(events, ['connect'])
+
+
 if __name__ == '__main__': unittest.main()

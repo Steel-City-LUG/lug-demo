@@ -56,10 +56,12 @@ jobs:
       - name: Deploy plugin directory
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ftp.steelcitylug.com
+          server: cloud-bedad4.managed-vps.net
           username: ${{ secrets.ftp_user }}
           password: ${{ secrets.sftp_pass }}
           protocol: ftps
+          port: 21
+          security: strict
           local-dir: deploy/plugin/
           server-dir: ${{ steps.path.outputs.remote }}
           dangerous-clean-slate: false

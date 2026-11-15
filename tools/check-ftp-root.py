@@ -3,6 +3,15 @@ import ftplib
 import os
 import posixpath
 import re
+import ssl
+
+
+def connect_secure(ftp, user, password):
+    """Verify the server before sending credentials and protect data transfers."""
+    ftp.connect(os.environ.get('FTP_HOST', 'cloud-bedad4.managed-vps.net'), 21)
+    ftp.auth()
+    ftp.login(user, password)
+    ftp.prot_p()
 
 
 def destination(path):
@@ -24,9 +33,8 @@ def verify(ftp, target):
 
 if __name__ == '__main__':
     target = destination(os.environ['SFTP_PATH'])
-    with ftplib.FTP_TLS('ftp.steelcitylug.com', timeout=30) as ftp:
-        ftp.login(os.environ['SFTP_USER'], os.environ['SFTP_PASS'])
-        ftp.prot_p()
+    with ftplib.FTP_TLS(context=ssl.create_default_context(), timeout=30) as ftp:
+        connect_secure(ftp, os.environ['SFTP_USER'], os.environ['SFTP_PASS'])
         verify(ftp, target)
     with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
         output.write('remote=' + target + '\n')

@@ -117,3 +117,8 @@ Review coverage, changes and limits: [Demo review](DEMO-REVIEW-2026-11-08.md).
 - Add the six reviewed Rotating Displays lessons to the training hub from the canonical publishing inventory.
 - Preserve existing demo data during this presentation-only upgrade.
 - Validate all eight training series (76 episodes); permit an explicit local WordPress root for isolated worktree checks.
+
+
+## 0.1.24
+
+- Require explicit FTPS on port 21 at `cloud-bedad4.managed-vps.net`, with certificate and hostname verification for credentials and file transfers. Preserve deployment destinations and manual dispatch.
