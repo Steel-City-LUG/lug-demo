@@ -36,6 +36,7 @@ jobs:
           find . -name '*.php' -print0 | xargs -0 -n1 php -l
           php tests/mail-safety.php
           php tests/training-upgrade.php
+          php tests/training-catalog.php
           python3 tests/ftp-root.py
 
       - name: Verify existing plugin destination

@@ -31,10 +31,10 @@ if ( false === strpos( $core, '>LUG Core<' ) || false === strpos( $core, 'Start 
 
 // The four reviewed MOC Cards lessons follow the existing 15 episodes in order.
 $moc_lessons = array(
-	16 => array( 'Create and Print MOC Cards', 'jd9_9XR4bK4' ),
-	17 => array( 'Choose MOC Card Themes and Save Templates', 'nqYxfLptWro' ),
+	16 => array( 'Create and Print MOC Cards', 'x4COV9Sof7c' ),
+	17 => array( 'Set MOC Builder Names, Themes and Templates', 'xNyv6SXzgh4' ),
 	18 => array( 'Collect Event MOC Cards and Sync Layouts', 'WQnktyuTdFs' ),
-	19 => array( 'Set MOC Card Template Options for Your Club', 'DAyyGyWvksA' ),
+	19 => array( 'Set MOC Card Template Options for Your Club', 'R-t973vJkyA' ),
 );
 $last_position = -1;
 $core_links    = html_entity_decode( $core, ENT_QUOTES, 'UTF-8' );

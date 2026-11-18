@@ -128,3 +128,9 @@ Review coverage, changes and limits: [Demo review](DEMO-REVIEW-2026-11-08.md).
 - Add four LUG Core MOC Cards lessons covering printing, card themes and reusable templates, event queues and Layout Designer sync, and club template settings.
 - Preserve the other seven training series and existing demo content; the hub now lists 80 episodes, including all 19 LUG Core lessons.
 - Keep presentation-only upgrades from rebuilding demo records.
+
+## 0.1.26
+
+- Refresh the reviewed MOC Cards printing, builder-name/theme/template, and club-settings lessons. Keep the event-queue lesson and the other seven training series unchanged.
+- Preserve existing demo accounts, events, and content during this training-only upgrade.
+- Verify the complete 80-episode catalog and the unchanged series without starting WordPress.
