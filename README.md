@@ -122,3 +122,9 @@ Review coverage, changes and limits: [Demo review](DEMO-REVIEW-2026-11-08.md).
 ## 0.1.24
 
 - Require explicit FTPS on port 21 at `cloud-bedad4.managed-vps.net`, with certificate and hostname verification for credentials and file transfers. Preserve deployment destinations and manual dispatch.
+
+## 0.1.25
+
+- Add four LUG Core MOC Cards lessons covering printing, card themes and reusable templates, event queues and Layout Designer sync, and club template settings.
+- Preserve the other seven training series and existing demo content; the hub now lists 80 episodes, including all 19 LUG Core lessons.
+- Keep presentation-only upgrades from rebuilding demo records.

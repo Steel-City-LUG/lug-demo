@@ -202,6 +202,38 @@ return array(
 						'Andrew' => 'APV4rcsq9dA'
 					),
 				),
+				array(
+					'number' => 16,
+					'title' => 'Create and Print MOC Cards',
+					'summary' => 'Find active MOCs, avoid duplicate quick-adds, and print single-face QR cards with recorded print dates.',
+					'videos' => array(
+						'Andrew' => 'jd9_9XR4bK4'
+					),
+				),
+				array(
+					'number' => 17,
+					'title' => 'Choose MOC Card Themes and Save Templates',
+					'summary' => 'Preview twelve card backgrounds, customize layout and typography when allowed, save private or shared templates, and add public builder links.',
+					'videos' => array(
+						'Andrew' => 'nqYxfLptWro'
+					),
+				),
+				array(
+					'number' => 18,
+					'title' => 'Collect Event MOC Cards and Sync Layouts',
+					'summary' => 'Submit and withdraw saved event print requests, sync MOCs from every event layout without reopening withdrawn requests, and confirm a leader print batch.',
+					'videos' => array(
+						'Andrew' => 'WQnktyuTdFs'
+					),
+				),
+				array(
+					'number' => 19,
+					'title' => 'Set MOC Card Template Options for Your Club',
+					'summary' => 'Choose custom designs, approved themes, or one standardized card; edit the club default and verify what owners can change.',
+					'videos' => array(
+						'Andrew' => 'DAyyGyWvksA'
+					),
+				),
 			),
 		),
 		'layout-designer' => array(

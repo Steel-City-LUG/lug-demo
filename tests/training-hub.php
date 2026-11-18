@@ -29,6 +29,23 @@ if ( false === strpos( $core, '>LUG Core<' ) || false === strpos( $core, 'Start 
 	exit( "LUG Core training playlist failed\n" );
 }
 
+// The four reviewed MOC Cards lessons follow the existing 15 episodes in order.
+$moc_lessons = array(
+	16 => array( 'Create and Print MOC Cards', 'jd9_9XR4bK4' ),
+	17 => array( 'Choose MOC Card Themes and Save Templates', 'nqYxfLptWro' ),
+	18 => array( 'Collect Event MOC Cards and Sync Layouts', 'WQnktyuTdFs' ),
+	19 => array( 'Set MOC Card Template Options for Your Club', 'DAyyGyWvksA' ),
+);
+$last_position = -1;
+$core_links    = html_entity_decode( $core, ENT_QUOTES, 'UTF-8' );
+foreach ( $moc_lessons as $number => $lesson ) {
+	$position = strpos( $core, '<li value="' . $number . '"><h3>' . $lesson[0] . '</h3>' );
+	if ( false === $position || $position <= $last_position || false === strpos( $core_links, 'watch?v=' . $lesson[1] . '&list=PLNm3UQSb5SzE' ) ) {
+		throw new RuntimeException( 'Missing or reordered MOC Cards lesson: ' . $number );
+	}
+	$last_position = $position;
+}
+
 // The legacy page is dropped from page lists only while /training/ is published.
 $legacy  = new WP_Post( (object) array( 'ID' => -1, 'post_name' => 'layout-designer-training' ) );
 $other   = new WP_Post( (object) array( 'ID' => -2, 'post_name' => 'plugin-tour' ) );
@@ -51,7 +68,7 @@ if ( false === strpos( $mosaic, 'PLfKKOOpgnNNc' ) || false === strpos( $mosaic, 
 }
 
 // Every published plugin series must remain reachable with its complete episode list.
-foreach ( array( 'brick-by-numbers' => 8, 'lug-core' => 15, 'layout-designer' => 14, 'bricks-cubed' => 8, 'geobrick' => 9, 'lug-newsletter' => 10, 'socialposts' => 6, 'rotating-displays' => 6 ) as $tool_id => $count ) {
+foreach ( array( 'brick-by-numbers' => 8, 'lug-core' => 19, 'layout-designer' => 14, 'bricks-cubed' => 8, 'geobrick' => 9, 'lug-newsletter' => 10, 'socialposts' => 6, 'rotating-displays' => 6 ) as $tool_id => $count ) {
 	$_GET = array( 'tool' => $tool_id );
 	$html = $renderer->render();
 	if ( $count !== substr_count( $html, '<li value=' ) || false === strpos( $html, 'aria-current="true"' ) ) {
@@ -59,4 +76,4 @@ foreach ( array( 'brick-by-numbers' => 8, 'lug-core' => 15, 'layout-designer' =>
 	}
 }
 
-echo "training hub checks passed (eight series, 76 episodes)\n";
+echo "training hub checks passed (eight series, 80 episodes)\n";
